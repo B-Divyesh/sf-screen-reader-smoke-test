@@ -1,0 +1,11 @@
+{
+  "slug": "screen-reader-smoke-test",
+  "title": "Announce Check",
+  "territory": "devtools-data",
+  "user": "Small web teams that need to verify the screen-reader announcements of one critical signup, search, or form flow before release.",
+  "smallest_useful_product": "NPM CLI plus local HTML reporter that drives a short scripted browser flow, captures accessibility-tree/ARIA-live changes, compares them to a checked-in expected transcript, and points to the first divergence.",
+  "monetization": "free",
+  "constraints": "Accessibility trees are not equivalent to screen-reader speech. Run against local or explicitly authorized URLs. Keep fixture data local and never log form values.",
+  "artifact_class": "library-npm",
+  "state": "RESEARCHED"
+}
