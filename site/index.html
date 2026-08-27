@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Catch missing labels, focus moves, and live announcements before release with a checked-in browser accessibility transcript.">
+    <meta name="theme-color" content="#f4f0e6">
+    <title>Announce Check — A reviewable screen-reader smoke test</title>
+    <link rel="icon" href="/mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/main.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="offline-banner" id="offline-banner" role="status" hidden>
+      You’re offline. The guide and sample report still work; installation needs a connection.
+    </div>
+    <header class="site-header shell">
+      <a class="brand" href="/" aria-label="Announce Check home">
+        <svg aria-hidden="true" viewBox="0 0 48 48" width="40" height="40"><circle cx="13" cy="24" r="7"/><path d="M20 24h9"/><path d="M30 17c4 4 4 10 0 14M35 12c7 7 7 17 0 24"/></svg>
+        <span>Announce Check</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#contract">The contract</a>
+        <a href="#demo">Sample report</a>
+        <a href="#limits">Honest limits</a>
+        <a class="nav-install" href="#install">Install <span aria-hidden="true">↓</span></a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero shell" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="kicker"><span>Local-first</span> / release check 01</p>
+          <h1 id="hero-title">Hear the break before your users do.</h1>
+          <p class="lede">Turn one critical signup, search, or form flow into a checked-in accessibility transcript. See the first focus or live-region divergence—without an accessibility score or hosted dashboard.</p>
+          <div class="install-command" id="install">
+            <code>npm i -D screen-reader-smoke-test</code>
+            <button class="copy-button" type="button" data-copy="npm i -D screen-reader-smoke-test" aria-describedby="copy-status">
+              <span>Copy</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><rect x="8" y="8" width="11" height="11"/><path d="M16 8V5H5v11h3"/></svg>
+            </button>
+          </div>
+          <p class="copy-status" id="copy-status" aria-live="polite">Free, open source, no telemetry.</p>
+        </div>
+        <figure class="hero-art">
+          <img src="/announce-field.webp" width="1200" height="800" fetchpriority="high" alt="A precise cobalt path connects focus nodes, splits at a coral divergence, and expands into dark announcement arcs.">
+          <figcaption><span aria-hidden="true">↳</span> One flow. One visible contract.</figcaption>
+        </figure>
+      </section>
+
+      <section class="sequence" aria-label="How the check works">
+        <ol class="shell">
+          <li><span>01</span><strong>Drive</strong><small>Play the approved browser flow</small></li>
+          <li><span>02</span><strong>Observe</strong><small>Record focus + ARIA live changes</small></li>
+          <li><span>03</span><strong>Compare</strong><small>Stop at the first divergence</small></li>
+        </ol>
+      </section>
+
+      <section class="contract-section shell" id="contract" aria-labelledby="contract-title">
+        <div class="section-intro">
+          <p class="kicker">A small contract beats a vague score</p>
+          <h2 id="contract-title">Review the words and order that matter.</h2>
+          <p>The expected transcript is plain JSON. Your reviewer can understand it, your CI can enforce it, and your fixture values never appear in it.</p>
+        </div>
+        <div class="code-window" aria-label="Configuration example">
+          <div class="window-label"><span>announce-check.config.mjs</span><span>3 steps</span></div>
+          <pre tabindex="0" aria-label="Announce Check configuration code"><code><span class="code-muted">import</span> { defineConfig } <span class="code-muted">from</span> <span class="code-string">"screen-reader-smoke-test"</span>;
+
+<span class="code-muted">export default</span> defineConfig({
+  name: <span class="code-string">"Signup confirmation"</span>,
+  url: <span class="code-string">"http://127.0.0.1:4173/signup"</span>,
+  steps: [
+    { action: <span class="code-string">"fill"</span>, target: { label: <span class="code-string">"Email address"</span> }, value: fixture.email },
+    { action: <span class="code-string">"click"</span>, target: { role: <span class="code-string">"button"</span>, name: <span class="code-string">"Create account"</span> } },
+    { action: <span class="code-string">"wait"</span>, for: <span class="code-number">250</span> }
+  ]
+});</code></pre>
+        </div>
+      </section>
+
+      <section class="demo-section" id="demo" aria-labelledby="demo-title">
+        <div class="shell">
+          <div class="section-intro demo-intro">
+            <p class="kicker">Local HTML report</p>
+            <h2 id="demo-title">The first difference gets the whole room.</h2>
+            <p>Try each first-class state. The real CLI writes this report beside your test run, with no upload and no account.</p>
+          </div>
+          <div class="demo-controls" role="group" aria-label="Sample report state">
+            <button type="button" data-demo="match" aria-pressed="true">✓ Match</button>
+            <button type="button" data-demo="diverge" aria-pressed="false">× Divergence</button>
+            <button type="button" data-demo="empty" aria-pressed="false">○ No events</button>
+            <button type="button" data-demo="error" aria-pressed="false">! Browser error</button>
+          </div>
+          <div class="report-frame" aria-live="polite" aria-atomic="true">
+            <div class="report-topline">
+              <p><span class="status-symbol">✓</span> <strong class="status-title">Contract matched</strong></p>
+              <span class="event-count">3 / 3 events</span>
+            </div>
+            <div class="transcripts">
+              <section aria-labelledby="expected-title">
+                <h3 id="expected-title">Expected</h3>
+                <ol class="expected-list"></ol>
+              </section>
+              <section aria-labelledby="received-title">
+                <h3 id="received-title">Received</h3>
+                <ol class="received-list"></ol>
+              </section>
+            </div>
+            <p class="report-action" hidden></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="limits shell" id="limits" aria-labelledby="limits-title">
+        <div class="section-intro">
+          <p class="kicker">Precise about its limits</p>
+          <h2 id="limits-title">A smoke test, not a simulated person.</h2>
+        </div>
+        <div class="limits-grid">
+          <article>
+            <svg aria-hidden="true" viewBox="0 0 48 48"><circle cx="15" cy="24" r="7"/><path d="M22 24h13M31 18l6 6-6 6"/></svg>
+            <h3>What it catches</h3>
+            <ul>
+              <li>A label disappears from the focused field</li>
+              <li>Focus lands in an unexpected place</li>
+              <li>A status or alert is missing, changed, or reordered</li>
+            </ul>
+          </article>
+          <article>
+            <svg aria-hidden="true" viewBox="0 0 48 48"><path d="M12 16h24v18H12z"/><path d="M17 11v5M31 11v5M18 24h12"/></svg>
+            <h3>What it does not claim</h3>
+            <ul>
+              <li>Exact NVDA, VoiceOver, or JAWS speech</li>
+              <li>Complete accessibility coverage</li>
+              <li>WCAG conformance or certification</li>
+            </ul>
+          </article>
+        </div>
+        <p class="manual-note"><strong>Keep the human check.</strong> Use Announce Check to protect the contract on every commit, then verify the release candidate with a real screen reader.</p>
+      </section>
+
+      <section class="closing">
+        <div class="shell closing-inner">
+          <div><p class="kicker">Before the release branch</p><h2>Give one essential flow an audible contract.</h2></div>
+          <a class="primary-link" href="https://www.npmjs.com/package/screen-reader-smoke-test">View npm package <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer shell">
+      <p><strong>Announce Check</strong> is an open local tool by Param Factory.</p>
+      <nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-screen-reader-smoke-test">Source</a></nav>
+    </footer>
+  </body>
+</html>
