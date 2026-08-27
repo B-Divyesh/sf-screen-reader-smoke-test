@@ -1,6 +1,7 @@
 node_modules/
 dist/
-.env
-*.log
-graphify-out/
+announce-check-report/
+*.tgz
 .DS_Store
+graphify-out/
+.announce-test-*/

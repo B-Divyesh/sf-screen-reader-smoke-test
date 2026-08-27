@@ -1,0 +1,65 @@
+{
+  "name": "screen-reader-smoke-test",
+  "version": "0.1.0",
+  "description": "A reviewable focus and ARIA live-region transcript contract for one critical web flow.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Sociobot (Param Factory)",
+  "homepage": "https://screen-reader-smoke-test.sociobot.in",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/B-Divyesh/sf-screen-reader-smoke-test.git"
+  },
+  "files": [
+    "dist/library",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "bin": {
+    "announce-check": "./dist/library/cli.js"
+  },
+  "main": "./dist/library/index.cjs",
+  "module": "./dist/library/index.js",
+  "types": "./dist/library/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/library/index.d.ts",
+      "import": "./dist/library/index.js",
+      "require": "./dist/library/index.cjs"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:site": "vite --config vite.config.ts",
+    "build:lib": "tsup",
+    "build:site": "vite build --config vite.config.ts",
+    "build": "npm run clean && npm run build:lib && npm run build:site",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepack": "npm run build"
+  },
+  "dependencies": {
+    "playwright": "1.58.2"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@types/node": "22.15.30",
+    "tsup": "8.5.0",
+    "typescript": "5.8.3",
+    "vite": "6.4.3",
+    "vitest": "3.2.7"
+  },
+  "keywords": [
+    "accessibility",
+    "aria-live",
+    "screen-reader",
+    "testing",
+    "playwright",
+    "cli"
+  ]
+}
