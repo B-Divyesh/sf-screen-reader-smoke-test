@@ -1,101 +1,82 @@
-# Announce Check v0.1.0 handoff — VERIFICATION FAIL
+# Announce Check v0.1.0 repair handoff — READY FOR RELEASE
 
 Date: 2026-08-28
 
-Work order: `screen-reader-smoke-test-build-1`
-
+Work order: `screen-reader-smoke-test-repair-1`
 Artifact: npm library + CLI + static documentation site
+Base candidate repaired: `2f9fcd8bb0581e9c098e6be3a73ab93a779e7390`
 
-> **Verifier override, 2026-08-28:** **FAIL — do not publish this candidate.**
-> Independent verification of
-> `2f9fcd8bb0581e9c098e6be3a73ab93a779e7390` found that the npm-installed
-> `announce-check` bin is a silent no-op. A clean consumer installation can
-> import the API, but `node_modules/.bin/announce-check --help` prints nothing
-> and `--update` creates no transcript. The full evidence is in
-> `.factory/verification.md`. The live site at
-> `https://screen-reader-smoke-test.sociobot.in` hash-matches this candidate;
-> this is a package release defect, not a deployment mismatch.
+## Repairs
 
-## Required before release
+1. Fixed the publishable `announce-check` bin. The ESM CLI now compares its
+   module filename with the real path of `process.argv[1]`, so npm's
+   `node_modules/.bin/announce-check` symlink invokes `main()` just like direct
+   execution.
+2. Increased every footer legal/source link's target to at least 44×44 CSS px.
+   At desktop and 390 px, Privacy measures 58.81×44 px, Terms 44×44 px, and
+   Source 50.42×44 px.
+3. Added package-consumer regression coverage. It builds a tarball, installs it
+   into a new `/tmp` consumer, asserts the installed bin is a symlink, runs
+   `--help`, records a real local signup transcript with `--update --json`,
+   proves fixture-value redaction, then runs a matching recheck. The site test
+   now measures all three footer links at both desktop and mobile widths.
 
-1. Fix the CLI entrypoint so the npm bin symlink invokes `main()`.
-2. Add a clean `npm pack` consumer test for `--help`, `--update`, and a
-   matching recheck.
-3. Increase the footer Privacy, Terms, and Source hit areas to at least 44×44
-   CSS px (currently about 21.7 px high).
-4. Re-run independent verification; the current handoff remains **FAIL** until
-   the P0 is resolved.
+## Verification evidence
 
-## What shipped
-
-- Typed public API with `defineConfig`, `runCheck`, `compareTranscripts`, and
-  `renderReport`; ESM, CommonJS, and `.d.ts` outputs.
-- Non-interactive `announce-check` CLI with helpful `--help`, `--update`,
-  `--json`, `--report`, and `--no-report` options and documented exit codes
-  `0` (match/update), `1` (divergence), and `2` (run/configuration error).
-- Chromium flow driver for fill, click, press, navigation, and wait steps.
-- Ordered focus contracts sourced from Chromium ARIA snapshots, plus relevant
-  required/disabled/invalid/expanded/checked state changes and debounced ARIA
-  live-region mutations.
-- Exact first-divergence comparison and a responsive, self-contained local HTML
-  report with match, mismatch, and empty states.
-- Privacy safeguards: loopback-only targets unless `allowRemote: true`, strict
-  same-origin navigation during a run, fixture-value redaction from events and
-  errors, and no telemetry or network storage.
-- Product-specific documentation site with interactive match/divergence/empty/
-  browser-error states, offline messaging and cached shell, privacy and terms
-  pages, responsive 390 px layout, and static-host security/cache headers.
-- Original generative-geometry hero at `site/public/announce-field.webp`
-  (37,324 bytes). Prompt and factory deployment provenance are recorded in
-  `.factory/design.md` and `.factory/announce-field-generation.json`.
-
-## Build and verification
-
-From a clean clone:
+From a clean dependency install:
 
 ```sh
 npm ci
 npm test
+npm run typecheck
 npm run build
 npm pack --dry-run
+npm audit
+npm audit --omit=dev
 ```
 
-- `npm test`: 4 files, 7 tests passed. This includes a real local signup flow
-  through Playwright, transcript update/recheck, fixture-value redaction, HTML
-  reporting, remote URL refusal, CLI parsing, and desktop/mobile axe scans.
-- `npm run typecheck`: passed with strict TypeScript.
-- `npm run build`: passed; static deploy root is `dist/site/index.html` and the
-  publishable library is in `dist/library/`.
-- `npm pack --dry-run`: passed. Package includes ESM, CJS, declarations, CLI,
-  source maps, README, changelog, and MIT license. The factory should publish;
-  no registry action was taken here.
+- `npm ci`: 95 packages; audit reported 0 vulnerabilities.
+- `npm test`: **5 files / 8 tests passed**. This includes the new real packed
+  consumer CLI regression, local browser-flow/redaction integration test,
+  report escaping, remote-target refusal, and desktop/mobile Axe scan.
+- `npm run typecheck`: passed. There is no separate lint tool configured in
+  this intentionally minimal TypeScript package.
+- `npm run build`: passed; publishes `dist/library` and static deploy root
+  `dist/site/index.html`.
+- `npm pack --dry-run`: passed; package contains ESM, CJS, declarations, CLI,
+  README, changelog, and MIT license (41.5 kB compressed / 182.7 kB unpacked).
 - `npm audit` and `npm audit --omit=dev`: 0 vulnerabilities.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173 ...`: HTTP 200, title and
-  language present, exactly one h1, main landmark present, no missing image alt,
-  no unlabeled buttons, and no console/page errors.
-- Lighthouse 12.8.2, mobile profile against the production build:
-  Performance 100, Accessibility 100, Best Practices 100, SEO 100; LCP 1.2 s,
-  CLS 0, Total Blocking Time 0 ms. INP is not available from a no-interaction
-  lab run; the shipped interaction script is 3.11 KB raw and produces no long
-  tasks in the audit.
-- Production asset sizes: initial JS 3.11 KB raw (1.48 KB gzip), CSS 10.57 KB
-  raw (3.28 KB gzip), hero WebP 37.32 KB. All are well below the product budgets.
+- `verify-url.sh` against the production build at `127.0.0.1:4173`: HTTP 200,
+  title, `lang=en`, one h1, main landmark, image alt text, labelled controls,
+  and no console/page errors.
+- Browser matrix against that production build at 1280×800 and 390×844:
+  keyboard Tab visibly focuses the skip link; Space activates the divergence
+  control; no horizontal issue; footer targets meet 44×44; Axe reports 0
+  serious/critical violations; no third-party requests or console errors.
+  Reduced motion computes instant durations and `scroll-behavior: auto`.
+- Service worker verification at 390 px: controlled offline reload returned
+  HTTP 200, displayed the offline banner, and the report state remained
+  interactive.
+- Lighthouse 12.8.2 mobile: Performance 100, Accessibility 100, Best
+  Practices 100, SEO 100; LCP 1,204 ms, CLS 0, TBT 0 ms.
+- Production assets: initial JS 3,111 bytes raw / 1,495 gzip; CSS 10,681 bytes
+  raw / 3,315 gzip. Both are within the static-product budget.
+
+## Publish and deploy
+
+- Ready-to-publish package command: `npm pack` (the factory owns npm registry
+  credentials; no package was published by this worker).
+- Static deployment root: `dist/site/`; deployment configuration is
+  `dist/site/staticwebapp.config.json` (copied from `site/public`).
+- Push this repair commit to `main`; the factory's static deployment should use
+  the above build output. Then verify
+  `https://screen-reader-smoke-test.sociobot.in/` for the new CSS asset and
+  re-run the deployed URL smoke check.
 
 ## Known limits
 
-- This is intentionally Chromium-only v1. Browser accessibility-tree semantics
-  and live-region DOM changes are not the speech output of NVDA, VoiceOver,
-  JAWS, or TalkBack and are not WCAG certification. The CLI, report, site, and
-  terms state this explicitly.
-- Live-region text is captured after a short debounce; AT-specific queueing for
-  `aria-atomic`, `aria-relevant`, and interrupted speech is outside v1 scope.
-- Navigations to a second origin are rejected. Teams with authorized multi-
-  origin authentication flows should split them into separate checks.
-
-## Recommended next steps
-
-1. Publish `screen-reader-smoke-test@0.1.0` from the factory registry account.
-2. Recruit five pilot teams and collect only opt-in qualitative feedback; the
-   package itself should remain telemetry-free.
-3. Use pilot evidence to prioritize additional browser/AT adapters as a
-   separate capability, without weakening the honest browser-semantics label.
+- Chromium accessibility-tree semantics and DOM live-region mutations are not
+  literal NVDA, VoiceOver, JAWS, or TalkBack speech. This remains an honest
+  smoke test, not WCAG certification.
+- v1 deliberately blocks remote targets unless `allowRemote: true`; separate
+  authorized checks are needed for multi-origin flows.

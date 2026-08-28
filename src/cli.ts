@@ -1,5 +1,5 @@
-import { resolve } from "node:path";
-import { pathToFileURL } from "node:url";
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { eventToLine } from "./compare.js";
 import { runCheck } from "./runner.js";
 
@@ -98,6 +98,9 @@ export async function main(args = process.argv.slice(2)): Promise<number> {
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+// npm exposes package binaries through node_modules/.bin symlinks. Resolve the
+// invoked filename before comparing it to this module so both direct execution
+// and the installed bin call main().
+if (process.argv[1] && fileURLToPath(import.meta.url) === realpathSync(process.argv[1])) {
   process.exitCode = await main();
 }

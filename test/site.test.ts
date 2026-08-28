@@ -33,6 +33,13 @@ describe("documentation site", () => {
       expect(await page.locator("h1").count()).toBe(1);
       expect(await page.locator("main").count()).toBe(1);
       expect(await page.locator("html").getAttribute("lang")).toBe("en");
+      const footerLinks = await page.locator(".site-footer nav a").all();
+      expect(footerLinks).toHaveLength(3);
+      for (const link of footerLinks) {
+        const box = await link.boundingBox();
+        expect(box?.width).toBeGreaterThanOrEqual(44);
+        expect(box?.height).toBeGreaterThanOrEqual(44);
+      }
       await page.getByRole("button", { name: "× Divergence" }).click();
       expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
       const results = await new AxeBuilder({ page }).analyze();

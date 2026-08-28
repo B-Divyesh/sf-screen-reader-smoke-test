@@ -109,6 +109,7 @@ pre { margin: 0; padding: 1.5rem; overflow: auto; font: .875rem/1.7 var(--mono);
 .primary-link { display: inline-flex; flex: none; align-items: center; justify-content: center; min-height: 52px; padding: .75rem 1rem; background: var(--lift); color: var(--blue-deep); box-shadow: 4px 4px 0 #9bacff; font-weight: 900; text-decoration: none; }
 .primary-link:hover, .nav-install:hover { transform: translateY(-2px); }
 .site-footer { display: flex; justify-content: space-between; gap: 2rem; padding-block: 2rem; color: var(--muted); font-size: .875rem; }
+.site-footer nav a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
 
 .legal-main { min-height: calc(100vh - 180px); padding-block: clamp(3rem, 8vw, 7rem); }
 .legal-main h1 { max-width: 12ch; font-size: clamp(3rem, 8vw, 5rem); }
