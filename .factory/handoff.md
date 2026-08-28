@@ -1,10 +1,30 @@
-# Announce Check v0.1.0 handoff
+# Announce Check v0.1.0 handoff — VERIFICATION FAIL
 
 Date: 2026-08-28
 
 Work order: `screen-reader-smoke-test-build-1`
 
 Artifact: npm library + CLI + static documentation site
+
+> **Verifier override, 2026-08-28:** **FAIL — do not publish this candidate.**
+> Independent verification of
+> `2f9fcd8bb0581e9c098e6be3a73ab93a779e7390` found that the npm-installed
+> `announce-check` bin is a silent no-op. A clean consumer installation can
+> import the API, but `node_modules/.bin/announce-check --help` prints nothing
+> and `--update` creates no transcript. The full evidence is in
+> `.factory/verification.md`. The live site at
+> `https://screen-reader-smoke-test.sociobot.in` hash-matches this candidate;
+> this is a package release defect, not a deployment mismatch.
+
+## Required before release
+
+1. Fix the CLI entrypoint so the npm bin symlink invokes `main()`.
+2. Add a clean `npm pack` consumer test for `--help`, `--update`, and a
+   matching recheck.
+3. Increase the footer Privacy, Terms, and Source hit areas to at least 44×44
+   CSS px (currently about 21.7 px high).
+4. Re-run independent verification; the current handoff remains **FAIL** until
+   the P0 is resolved.
 
 ## What shipped
 
