@@ -1,7 +1,9 @@
 import { chromium, type Locator, type Page } from "playwright";
 import type { AnnounceCheckConfig, FlowStep, Target, TranscriptEvent } from "./types.js";
 
-type BrowserEvent = Omit<TranscriptEvent, "step">;
+type BrowserEvent =
+  | { kind: "focus"; text: string; states: string[] }
+  | { kind: "live"; text: string; politeness: "polite" | "assertive" };
 
 export async function executeFlow(config: AnnounceCheckConfig): Promise<TranscriptEvent[]> {
   const browser = await chromium.launch({ headless: true });
@@ -17,15 +19,30 @@ export async function executeFlow(config: AnnounceCheckConfig): Promise<Transcri
     .map((step) => step.value)
     .filter(Boolean);
   let currentStep = 0;
+  let bindingQueue = Promise.resolve();
 
   try {
     await page.exposeBinding("__announceCheckPush", ({ frame }, incoming: BrowserEvent) => {
       if (frame !== page.mainFrame()) return;
-      events.push({
-        ...incoming,
-        text: redact(incoming.text, sensitiveValues),
-        step: currentStep
+      const eventStep = currentStep;
+      bindingQueue = bindingQueue.then(async () => {
+        let text = incoming.text;
+        if (incoming.kind === "focus") {
+          try {
+            const snapshot = await frame.locator(":focus").ariaSnapshot();
+            text = focusLineFromSnapshot(snapshot, incoming.text, incoming.states);
+          } catch {
+            // A navigation can detach the focused node before the snapshot resolves.
+          }
+        }
+        events.push({
+          kind: incoming.kind,
+          text: redact(text, sensitiveValues),
+          ...(incoming.kind === "live" ? { politeness: incoming.politeness } : {}),
+          step: eventStep
+        });
       });
+      return bindingQueue;
     });
     await page.addInitScript(installObserver);
     page.setDefaultTimeout(config.timeout ?? 10_000);
@@ -38,7 +55,8 @@ export async function executeFlow(config: AnnounceCheckConfig): Promise<Transcri
       await page.waitForTimeout(config.settleTime ?? 80);
       assertCurrentUrl(page, config);
     }
-    return collapseDuplicates(events);
+    await bindingQueue;
+    return events;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(redact(message, sensitiveValues));
@@ -98,17 +116,13 @@ function redact(text: string, values: string[]): string {
   return values.reduce((safe, value) => safe.split(value).join("[redacted]"), text);
 }
 
-function collapseDuplicates(events: TranscriptEvent[]): TranscriptEvent[] {
-  return events.filter((event, index) => {
-    const previous = events[index - 1];
-    return !(
-      previous &&
-      previous.kind === event.kind &&
-      previous.text === event.text &&
-      previous.politeness === event.politeness &&
-      previous.step === event.step
-    );
-  });
+function focusLineFromSnapshot(snapshot: string, fallback: string, states: string[]): string {
+  const firstLine = snapshot.trim().split("\n")[0] ?? "";
+  const match = /^-\s+([^\s"]+)(?:\s+"((?:[^"\\]|\\.)*)")?/.exec(firstLine);
+  if (!match) return fallback;
+  const role = match[1] ?? "";
+  const name = (match[2] ?? "").replaceAll('\\"', '"').replaceAll("\\\\", "\\");
+  return [name, role, ...states].filter(Boolean).join(" — ");
 }
 
 function installObserver(): void {
@@ -164,31 +178,41 @@ function installObserver(): void {
     return tag;
   };
 
-  const focusText = (element: Element): string => {
-    const parts = [nameOf(element), roleOf(element)];
-    if (element.matches(":required")) parts.push("required");
-    if (element.matches(":disabled") || element.getAttribute("aria-disabled") === "true") parts.push("disabled");
-    if (element.getAttribute("aria-invalid") === "true") parts.push("invalid");
+  const focusEvent = (element: Element): Extract<BrowserEvent, { kind: "focus" }> => {
+    const states: string[] = [];
+    if (element.matches(":required")) states.push("required");
+    if (element.matches(":disabled") || element.getAttribute("aria-disabled") === "true") states.push("disabled");
+    if (element.getAttribute("aria-invalid") === "true") states.push("invalid");
     const expanded = element.getAttribute("aria-expanded");
-    if (expanded === "true") parts.push("expanded");
-    if (expanded === "false") parts.push("collapsed");
+    if (expanded === "true") states.push("expanded");
+    if (expanded === "false") states.push("collapsed");
     const checked = element.getAttribute("aria-checked");
-    if (checked === "true") parts.push("checked");
-    if (checked === "false") parts.push("not checked");
-    return parts.filter(Boolean).join(" — ");
+    if (checked === "true") states.push("checked");
+    if (checked === "false") states.push("not checked");
+    return { kind: "focus", text: [nameOf(element), roleOf(element), ...states].filter(Boolean).join(" — "), states };
   };
 
   document.addEventListener(
     "focusin",
     (event) => {
       if (!(event.target instanceof Element)) return;
-      const text = focusText(event.target);
-      if (text) void browserWindow.__announceCheckPush({ kind: "focus", text });
+      const observed = focusEvent(event.target);
+      if (observed.text) void browserWindow.__announceCheckPush(observed);
     },
     true
   );
 
   const pending = new WeakMap<Element, number>();
+  let focusTimer = 0;
+  const scheduleFocusUpdate = () => {
+    window.clearTimeout(focusTimer);
+    focusTimer = window.setTimeout(() => {
+      const focused = document.activeElement;
+      if (!focused || focused === document.body) return;
+      const observed = focusEvent(focused);
+      if (observed.text) void browserWindow.__announceCheckPush(observed);
+    }, 20);
+  };
   const scheduleLive = (region: Element) => {
     const oldTimer = pending.get(region);
     if (oldTimer) window.clearTimeout(oldTimer);
@@ -224,6 +248,13 @@ function installObserver(): void {
       mutations.forEach((mutation) => {
         findRegions(mutation.target).forEach((region) => regions.add(region));
         mutation.addedNodes.forEach((node) => findRegions(node).forEach((region) => regions.add(region)));
+        const focused = document.activeElement;
+        if (
+          focused &&
+          (mutation.target === focused ||
+            (mutation.target instanceof Element && mutation.target.contains(focused)) ||
+            (mutation.target instanceof Element && focused.getAttribute("aria-labelledby")?.split(" ").includes(mutation.target.id)))
+        ) scheduleFocusUpdate();
       });
       regions.forEach(scheduleLive);
     }).observe(document.documentElement, {
@@ -231,7 +262,7 @@ function installObserver(): void {
       childList: true,
       characterData: true,
       attributes: true,
-      attributeFilter: ["aria-live", "role"]
+      attributeFilter: ["aria-live", "role", "aria-label", "aria-labelledby", "aria-invalid", "aria-expanded", "aria-checked", "disabled", "required"]
     });
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", begin, { once: true });

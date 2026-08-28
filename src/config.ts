@@ -1,6 +1,6 @@
 import { access, readFile } from "node:fs/promises";
 import { constants } from "node:fs";
-import { isAbsolute, resolve } from "node:path";
+import { dirname, isAbsolute, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { AnnounceCheckConfig, TranscriptFile } from "./types.js";
 
@@ -26,7 +26,7 @@ export async function loadConfig(configPath = DEFAULT_CONFIG): Promise<{
   const imported = (await import(pathToFileURL(absolute).href)) as { default?: unknown };
   const config = imported.default;
   validateConfig(config);
-  return { config, directory: resolve(absolute, "..") };
+  return { config, directory: dirname(absolute) };
 }
 
 function validateConfig(value: unknown): asserts value is AnnounceCheckConfig {

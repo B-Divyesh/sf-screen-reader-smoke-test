@@ -1,4 +1,4 @@
-import { mkdtemp, writeFile } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { loadConfig } from "../src/config.js";
@@ -10,6 +10,7 @@ describe("configuration safety", () => {
     const path = join(directory, "remote.mjs");
     await writeFile(path, 'export default { name: "Remote", url: "https://example.com", steps: [{ action: "wait", for: 1 }] };');
     await expect(loadConfig(path)).rejects.toThrow("allowRemote: true");
+    await rm(directory, { recursive: true });
   });
 
   it("parses non-interactive CLI options", () => {

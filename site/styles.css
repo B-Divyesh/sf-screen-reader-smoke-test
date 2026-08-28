@@ -67,6 +67,8 @@ h1 { margin: 0; max-width: 10ch; font-size: clamp(3.25rem, 6.5vw, 6.4rem); line-
 .window-label { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem 1rem; border-bottom: 1px solid #3b3f4a; color: #c6c8d0; font-size: .8rem; }
 pre { margin: 0; padding: 1.5rem; overflow: auto; font: .875rem/1.7 var(--mono); }
 .code-muted { color: #aab5ff; }.code-string { color: #a8e0bc; }.code-number { color: #ffad9e; }
+.run-commands { display: grid; gap: .35rem; padding: 1rem 1.5rem; border-top: 1px solid #3b3f4a; color: #d7dbeb; font-size: .8rem; }
+.run-commands code::before { content: "$ "; color: #8fa8ff; }
 
 .demo-section { padding-block: clamp(5rem, 9vw, 8rem); background: #ddd7ca; border-block: 1px solid var(--rule); }
 .demo-section .section-intro > p:last-child { color: #4d4f57; }

@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { runCheck } from "../src/runner.js";
@@ -57,5 +57,6 @@ describe("documented signup flow", () => {
 
     const verified = await runCheck({ configPath, writeReport: false });
     expect(verified.matches).toBe(true);
+    await rm(directory, { recursive: true });
   }, 30_000);
 });

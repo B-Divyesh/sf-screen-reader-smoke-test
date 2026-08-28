@@ -6,6 +6,7 @@
     <meta name="description" content="Catch missing labels, focus moves, and live announcements before release with a checked-in browser accessibility transcript.">
     <meta name="theme-color" content="#f4f0e6">
     <title>Announce Check — A reviewable screen-reader smoke test</title>
+    <link rel="canonical" href="https://screen-reader-smoke-test.sociobot.in/">
     <link rel="icon" href="/mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/styles.css">
     <script type="module" src="/main.ts"></script>
@@ -76,6 +77,7 @@
     { action: <span class="code-string">"wait"</span>, for: <span class="code-number">250</span> }
   ]
 });</code></pre>
+          <div class="run-commands" aria-label="Commands to record and verify"><code>npx playwright install chromium</code><code>npx announce-check --update</code><code>npx announce-check</code></div>
         </div>
       </section>
 

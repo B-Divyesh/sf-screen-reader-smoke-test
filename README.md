@@ -53,8 +53,8 @@ npx announce-check
 
 The command exits `0` on a match, `1` on a transcript mismatch, and `2` for a
 configuration or browser failure. It writes `announce-check-report/index.html`
-by default. `--json` writes a machine-readable result to stdout and keeps status
-messages on stderr. Use `--report <directory>` to move the report or
+by default. `--json` writes one machine-readable result to stdout. Use
+`--report <directory>` to move the report or
 `--no-report` to skip it.
 
 Only loopback URLs are accepted by default. For a remote staging URL you own or
