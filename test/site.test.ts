@@ -57,6 +57,19 @@ describe("documentation site", () => {
     }
   }, 30_000);
 
+  it("keeps the privacy repository link at least 44 CSS pixels tall", async () => {
+    for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+      const context = await browser.newContext({ viewport, serviceWorkers: "block" });
+      const page = await context.newPage();
+      await page.goto(`${origin}/privacy/`, { waitUntil: "domcontentloaded" });
+      const repositoryLink = page.getByRole("link", { name: "public source repository" });
+      const box = await repositoryLink.boundingBox();
+      expect(box?.width).toBeGreaterThanOrEqual(44);
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+      await context.close();
+    }
+  });
+
   it("precaches the built assets for a cold-cache offline reload and versions every worker shell", async () => {
     await execFileAsync("npm", ["run", "build:site"]);
     const builtIndex = await readFile("dist/site/index.html", "utf8");

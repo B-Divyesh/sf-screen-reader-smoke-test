@@ -150,6 +150,10 @@ function installObserver(): void {
         .join(" ");
       if (labelText) return labelText;
     }
+    if (element instanceof HTMLInputElement) {
+      const type = element.type.toLowerCase();
+      if (["button", "submit", "reset"].includes(type)) return clean(element.value);
+    }
     if (element instanceof HTMLImageElement) return clean(element.alt);
     const title = clean(element.getAttribute("title"));
     if (title) return title;

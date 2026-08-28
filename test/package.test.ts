@@ -8,8 +8,9 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const execFileAsync = promisify(execFile);
 const repository = resolve(process.cwd());
-const fixture = `<!doctype html><html lang="en"><head><title>Signup fixture</title></head><body>
-<main><h1>Create an account</h1><form><label for="email">Email address</label><input id="email" type="email" required><button>Create account</button></form><p role="status"></p></main>
+let submitValue = "Create account";
+const fixture = () => `<!doctype html><html lang="en"><head><title>Signup fixture</title></head><body>
+<main><h1>Create an account</h1><form><label for="email">Email address</label><input id="email" type="email" required><input type="submit" value="${submitValue}"></form><p role="status"></p></main>
 <script>document.querySelector('form').addEventListener('submit',event=>{event.preventDefault();document.querySelector('[role=status]').textContent='Account created for '+document.querySelector('input').value})</script>
 </body></html>`;
 
@@ -19,7 +20,7 @@ let origin: string;
 beforeAll(async () => {
   server = createServer((_request, response) => {
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-    response.end(fixture);
+    response.end(fixture());
   });
   await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
   const address = server.address();
@@ -50,7 +51,7 @@ describe("published package consumer", () => {
         expectedPath: "./announce-check.expected.json",
         steps: [
           { action: "fill", target: { label: "Email address" }, value: "consumer@example.test" },
-          { action: "click", target: { role: "button", name: "Create account" } },
+          { action: "click", target: { selector: "input[type=submit]" } },
           { action: "wait", for: 60 }
         ]
       };`);
@@ -67,7 +68,20 @@ describe("published package consumer", () => {
 
       const checked = await runBin(["announce-check.config.mjs", "--json", "--no-report"]);
       expect(JSON.parse(checked.stdout)).toMatchObject({ updated: false, matches: true });
+
+      submitValue = "Register now";
+      const changed = await runBin(["announce-check.config.mjs", "--json", "--no-report"]).catch((error: unknown) => error as { code: number; stdout: string });
+      expect(changed).toMatchObject({ code: 1 });
+      expect(JSON.parse(changed.stdout)).toMatchObject({
+        matches: false,
+        diff: {
+          firstDifference: 1,
+          expected: { kind: "focus", text: "Create account — button" },
+          received: { kind: "focus", text: "Register now — button" }
+        }
+      });
     } finally {
+      submitValue = "Create account";
       await rm(consumer, { recursive: true, force: true });
       if (tarball) await rm(tarball, { force: true });
     }
