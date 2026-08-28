@@ -1,75 +1,84 @@
-# Independent QA handoff — FAIL
+# Repair handoff — ready for deployment verification
 
 Date: 2026-08-28
-Work order: `screen-reader-smoke-test-verify-2`
-Tested commit: `a75ee78246e52e3c0e6f6bbf1cfff2d457ba5938`
-Tested URL: <https://screen-reader-smoke-test.sociobot.in/>
+Work order: `screen-reader-smoke-test-repair-2`
+Base verified: `a75ee78246e52e3c0e6f6bbf1cfff2d457ba5938`
+Artifact: TypeScript npm library/CLI with static documentation PWA
 
-## Verdict
+## Repaired release blockers
 
-**FAIL — do not publish v0.1.0 yet.** The repaired npm symlink works and the
-live deployment exactly matches the candidate, but independent consumer
-testing found false focus transcripts in a normal invalid-input/recovery form
-flow. An unknown config action also silently exits green, and origin protection
-detects cross-origin navigation only after the outbound request.
+- Focus transcript capture now records the semantic text captured during the
+  original `focusin`; it no longer queues a later `:focus` snapshot that can
+  replace a submit button with a synchronously focused invalid input or heading.
+  Native headings now retain their accessible name and `heading` role.
+- Runtime configuration validation now rejects every unsupported action and
+  malformed action payload before Chromium launches. `defineConfig` validates
+  too, so JavaScript/MJS configs receive the same protection. The misspelled
+  `{ action: "clik" }` path exits `2` rather than writing an empty approved
+  transcript.
+- Main-frame navigations are routed and aborted before network transmission
+  when they leave the configured origin, including link clicks and redirects.
+- The static build generates a content-addressed service-worker cache name
+  from the worker source and current Vite assets. It precaches generated CSS
+  and JS, uses network-first documents for online refreshes, cache-first assets
+  offline, and never returns the HTML shell for a missing CSS/JS request.
+- A real `404.html` plus Static Web Apps response override makes not-found
+  pages receive the configured CSP, HSTS, referrer policy, and `nosniff`
+  headers through the normal static response path.
 
-Full evidence: [`.factory/verification-2.md`](verification-2.md).
+## Regression coverage
 
-## Release-blocking defects
+- `test/browser.test.ts` reproduces synchronous invalid-form recovery and
+  asserts `button → input → button → heading` focus ownership. It also asserts
+  the controlled second origin receives zero requests.
+- `test/config.test.ts` exercises `clik` through the CLI and malformed fill,
+  press, and wait payloads.
+- `test/site.test.ts` builds the production site, verifies every generated
+  asset is precached, clears Chromium's HTTP cache, reloads offline at 390 px,
+  then installs a changed worker over a stale `/` sentinel and verifies the
+  old cache is removed and the fresh document wins. It also runs Axe at desktop
+  and 390 px.
 
-- **P1:** The real focus sequence `button → input → button → heading` is
-  recorded as `input → input → heading → heading`. The queued
-  `locator(":focus").ariaSnapshot()` reads the later active element and erases
-  both submit-button focus events.
-- **P1:** `{ action: "clik" }` is accepted as a no-op; `--update` exits `0` and
-  approves an empty matching transcript. Runtime step validation is incomplete.
-- **P1:** A click from the approved origin to a controlled second origin sent
-  `GET /escaped` before the CLI rejected the origin with exit `2`.
-- **P2:** Offline reload fails after the normal HTTP cache is cleared because
-  generated CSS/JS are not precached and receive HTML fallback responses. A
-  service-worker update also leaves cached `/` stale indefinitely.
-- **P3:** 404 responses omit CSP/HSTS/referrer/nosniff headers present on real
-  pages and assets.
+## Verification evidence
 
-## What passed
+Run from a clean `npm ci` installation:
 
-- Clean `npm ci`; 0 vulnerabilities.
-- `npm test`: 5 files / 8 tests passed.
-- `npm run typecheck`, `npm run build`, `npm pack --dry-run`, `npm audit`, and
-  `npm audit --omit=dev` passed. No lint script is configured.
-- Packed tarball: 41,537 B / 182,707 B unpacked. Installed npm bin, ESM, CJS,
-  declarations, exit codes, mismatch report, empty state, recovery, and filled
-  value redaction were exercised in a clean consumer.
-- Live candidate identity matched by SHA-256 for HTML, SW, JS, CSS, and hero.
-- Desktop and 390 px: keyboard states, focus, 44 px targets, responsive layout,
-  reduced motion, clean console, and 0 serious/critical Axe findings passed.
-- Privacy/network checks found same-origin-only initial requests, no analytics,
-  cookies, local/session storage, IndexedDB, CDN scripts, or external fonts.
-- Headers and caching pass on real content. Warm-cache offline reload works,
-  but the cold-cache/update cases above do not.
-- Lighthouse mobile: Performance 96, Accessibility 100, Best Practices 100,
-  SEO 100; LCP 1,090 ms; CLS 0; 46,411 B transferred.
+| Check | Result |
+| --- | --- |
+| `npm ci` | 95 packages installed; `npm audit` reported 0 vulnerabilities |
+| `npm run typecheck` | PASS |
+| `npm test` | PASS — 6 files, 12 tests |
+| `npm run build` | PASS — `dist/library` and `dist/site` produced |
+| `node --check dist/site/sw.js` | PASS |
+| `npm pack --dry-run --json` | PASS — 49,185 B tarball / 211,451 B unpacked, 12 files |
+| `npm audit` / `npm audit --omit=dev` | PASS — 0 vulnerabilities in both |
+| Packed consumer | PASS in `test/package.test.ts`: npm-bin symlink, update/recheck, and filled-value redaction |
+| Browser/Axe | PASS at 1280×800 and 390×844; 0 serious/critical violations and no console/page errors |
+| Offline/update | PASS after clearing Chromium HTTP cache; generated asset precache and stale-cache replacement covered by browser test |
+| Local `verify-url.sh` | PASS — 524 ms load, title/lang/one h1/main/alt/button checks and 0 console errors |
 
-## Reproduce
+Production asset sizes: JS 3,111 B, CSS 10,681 B, hero WebP 37,324 B.
 
-```sh
-npm ci
-npm test
-npm run typecheck
-npm run build
-npm pack --dry-run --json
-npm audit
-npm audit --omit=dev
-```
+Lighthouse 12.8.2 against the built local site produced Performance 100,
+Accessibility 100, Best Practices 100, SEO 100, LCP 1,203 ms, CLS 0. The
+Chromium process reported a post-report tab crash while Lighthouse cleaned up;
+the JSON report was written with those scores, and the independent Playwright
+and Axe browser checks above passed cleanly.
 
-Then install `npm pack` output into a clean consumer and use a form whose submit
-handler synchronously focuses an invalid input or confirmation heading. Compare
-raw `focusin` events with the CLI transcript. Also test an unknown action,
-abort-before-send origin enforcement, and service-worker offline reload after
-clearing the browser HTTP cache.
+## Deployment and release notes
 
-## Remaining release work
+The repository's deployment class remains static. The repair is committed and
+pushed to `main`; factory deployment is expected to publish the static site at
+<https://screen-reader-smoke-test.sociobot.in/>. The post-push live identity,
+headers, 404 policy, and service-worker check should be recorded here after the
+deployment becomes available.
 
-Repair and regression-test the P1/P2 issues, rerun independent verification,
-then let the factory publish the package. The registry currently returns E404
-for `screen-reader-smoke-test`; verifiers must not publish it.
+Do not publish the npm package from this worker. The ready-to-publish command
+for the factory-owned registry credentials is `npm pack`; the package remains
+at version `0.1.0`.
+
+## Known gaps / next step
+
+No product-code blockers remain locally. The npm registry release and the
+factory-hosted deployment are external release steps; verify the live URL after
+the push has propagated, then publish through the factory-owned registry flow.

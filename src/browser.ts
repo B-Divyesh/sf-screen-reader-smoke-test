@@ -20,29 +20,34 @@ export async function executeFlow(config: AnnounceCheckConfig): Promise<Transcri
     .filter(Boolean);
   let currentStep = 0;
   let bindingQueue = Promise.resolve();
+  let blockedNavigation: URL | undefined;
 
   try {
     await page.exposeBinding("__announceCheckPush", ({ frame }, incoming: BrowserEvent) => {
       if (frame !== page.mainFrame()) return;
       const eventStep = currentStep;
-      bindingQueue = bindingQueue.then(async () => {
-        let text = incoming.text;
-        if (incoming.kind === "focus") {
-          try {
-            const snapshot = await frame.locator(":focus").ariaSnapshot();
-            text = focusLineFromSnapshot(snapshot, incoming.text, incoming.states);
-          } catch {
-            // A navigation can detach the focused node before the snapshot resolves.
-          }
-        }
+      bindingQueue = bindingQueue.then(() => {
         events.push({
           kind: incoming.kind,
-          text: redact(text, sensitiveValues),
+          // The page observer captured this text at focusin time. Never ask
+          // Playwright for :focus later: synchronous validation handlers can
+          // move focus before an exposed binding is serviced.
+          text: redact(incoming.text, sensitiveValues),
           ...(incoming.kind === "live" ? { politeness: incoming.politeness } : {}),
           step: eventStep
         });
       });
       return bindingQueue;
+    });
+    await page.route("**/*", async (route) => {
+      const request = route.request();
+      const candidate = new URL(request.url());
+      if (request.isNavigationRequest() && request.frame() === page.mainFrame() && !isAllowed(candidate, config)) {
+        blockedNavigation = candidate;
+        await route.abort("blockedbyclient");
+        return;
+      }
+      await route.continue();
     });
     await page.addInitScript(installObserver);
     page.setDefaultTimeout(config.timeout ?? 10_000);
@@ -58,6 +63,7 @@ export async function executeFlow(config: AnnounceCheckConfig): Promise<Transcri
     await bindingQueue;
     return events;
   } catch (error) {
+    if (blockedNavigation) throw new Error(redact(originError(blockedNavigation, config), sensitiveValues));
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(redact(message, sensitiveValues));
   } finally {
@@ -104,25 +110,20 @@ function assertCurrentUrl(page: Page, config: AnnounceCheckConfig): void {
 }
 
 function assertAllowed(candidate: URL, config: AnnounceCheckConfig): void {
+  if (!isAllowed(candidate, config)) throw new Error(originError(candidate, config));
+}
+
+function isAllowed(candidate: URL, config: AnnounceCheckConfig): boolean {
+  return candidate.origin === new URL(config.url).origin;
+}
+
+function originError(candidate: URL, config: AnnounceCheckConfig): string {
   const approved = new URL(config.url);
-  if (candidate.origin !== approved.origin) {
-    throw new Error(
-      `Flow left its authorized origin (${approved.origin}) and reached ${candidate.origin}. Add a separate check for that origin.`
-    );
-  }
+  return `Flow left its authorized origin (${approved.origin}) and reached ${candidate.origin}. Add a separate check for that origin.`;
 }
 
 function redact(text: string, values: string[]): string {
   return values.reduce((safe, value) => safe.split(value).join("[redacted]"), text);
-}
-
-function focusLineFromSnapshot(snapshot: string, fallback: string, states: string[]): string {
-  const firstLine = snapshot.trim().split("\n")[0] ?? "";
-  const match = /^-\s+([^\s"]+)(?:\s+"((?:[^"\\]|\\.)*)")?/.exec(firstLine);
-  if (!match) return fallback;
-  const role = match[1] ?? "";
-  const name = (match[2] ?? "").replaceAll('\\"', '"').replaceAll("\\\\", "\\");
-  return [name, role, ...states].filter(Boolean).join(" — ");
 }
 
 function installObserver(): void {
@@ -152,7 +153,7 @@ function installObserver(): void {
     if (element instanceof HTMLImageElement) return clean(element.alt);
     const title = clean(element.getAttribute("title"));
     if (title) return title;
-    if (element.matches("button, a, summary, [role='button'], [role='link'], [role='tab'], [role='option']")) {
+    if (element.matches("button, a, summary, h1, h2, h3, h4, h5, h6, [role='button'], [role='link'], [role='tab'], [role='option'], [role='heading']")) {
       return clean(element.textContent);
     }
     return "";
@@ -164,6 +165,7 @@ function installObserver(): void {
     const tag = element.tagName.toLowerCase();
     if (tag === "button" || tag === "summary") return "button";
     if (tag === "a" && element.hasAttribute("href")) return "link";
+    if (/^h[1-6]$/.test(tag)) return "heading";
     if (tag === "textarea") return "textbox";
     if (tag === "select") return element.hasAttribute("multiple") ? "listbox" : "combobox";
     if (element instanceof HTMLInputElement) {
@@ -203,16 +205,6 @@ function installObserver(): void {
   );
 
   const pending = new WeakMap<Element, number>();
-  let focusTimer = 0;
-  const scheduleFocusUpdate = () => {
-    window.clearTimeout(focusTimer);
-    focusTimer = window.setTimeout(() => {
-      const focused = document.activeElement;
-      if (!focused || focused === document.body) return;
-      const observed = focusEvent(focused);
-      if (observed.text) void browserWindow.__announceCheckPush(observed);
-    }, 20);
-  };
   const scheduleLive = (region: Element) => {
     const oldTimer = pending.get(region);
     if (oldTimer) window.clearTimeout(oldTimer);
@@ -248,13 +240,6 @@ function installObserver(): void {
       mutations.forEach((mutation) => {
         findRegions(mutation.target).forEach((region) => regions.add(region));
         mutation.addedNodes.forEach((node) => findRegions(node).forEach((region) => regions.add(region)));
-        const focused = document.activeElement;
-        if (
-          focused &&
-          (mutation.target === focused ||
-            (mutation.target instanceof Element && mutation.target.contains(focused)) ||
-            (mutation.target instanceof Element && focused.getAttribute("aria-labelledby")?.split(" ").includes(mutation.target.id)))
-        ) scheduleFocusUpdate();
       });
       regions.forEach(scheduleLive);
     }).observe(document.documentElement, {
