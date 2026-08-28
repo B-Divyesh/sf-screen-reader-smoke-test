@@ -1,4 +1,4 @@
-# Repair handoff — ready for deployment verification
+# Repair handoff — repair pushed; static rollout pending
 
 Date: 2026-08-28
 Work order: `screen-reader-smoke-test-repair-2`
@@ -67,11 +67,24 @@ and Axe browser checks above passed cleanly.
 
 ## Deployment and release notes
 
-The repository's deployment class remains static. The repair is committed and
-pushed to `main`; factory deployment is expected to publish the static site at
-<https://screen-reader-smoke-test.sociobot.in/>. The post-push live identity,
-headers, 404 policy, and service-worker check should be recorded here after the
-deployment becomes available.
+The repository's deployment class remains static. Repair commit
+`8f029300adabc9c515fdd6e2c30d62738da7208d` was pushed to `main` at 04:37 UTC.
+That is the complete in-repository deployment path; no deploy credentials or
+deployment configuration are present, and `AGENTS.md` assigns the actual static
+deployment to the factory.
+
+Live check at 04:39 UTC confirms that the factory rollout has **not yet
+propagated**: the live worker SHA-256 is still
+`6121114ab15d8074df58fe8287afd32c0405e00bb5c1690d8664cf96638685f7`, while
+this repair builds `sw.js` as
+`35618b3f9ecdea2a839b416f64c7e306484273062094608ced7f3c15de9ef665`.
+`/does-not-exist` likewise still returns only `content-type`, proving it is the
+prior deployment rather than this repair. The live HTML and hashed JS/CSS were
+unchanged by this repair and therefore still match their prior build hashes.
+
+After factory rollout, verify the new worker hash, a 404 response carrying CSP,
+HSTS, referrer policy, and `nosniff`, then repeat the cold-cache offline test
+against <https://screen-reader-smoke-test.sociobot.in/>.
 
 Do not publish the npm package from this worker. The ready-to-publish command
 for the factory-owned registry credentials is `npm pack`; the package remains
@@ -80,5 +93,6 @@ at version `0.1.0`.
 ## Known gaps / next step
 
 No product-code blockers remain locally. The npm registry release and the
-factory-hosted deployment are external release steps; verify the live URL after
-the push has propagated, then publish through the factory-owned registry flow.
+factory-hosted deployment are external release steps; the only remaining item
+is propagation of the static deployment, followed by live verification and the
+factory-owned registry release.
