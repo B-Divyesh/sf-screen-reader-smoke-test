@@ -68,10 +68,15 @@ npm audit --omit=dev
   credentials; no package was published by this worker).
 - Static deployment root: `dist/site/`; deployment configuration is
   `dist/site/staticwebapp.config.json` (copied from `site/public`).
-- Push this repair commit to `main`; the factory's static deployment should use
-  the above build output. Then verify
-  `https://screen-reader-smoke-test.sociobot.in/` for the new CSS asset and
-  re-run the deployed URL smoke check.
+- Deployed successfully with `/opt/fleet/lib/deploy-static.sh
+  screen-reader-smoke-test dist/site` (Azure deployment ID
+  `f222985c-e8d6-450a-ba2a-c4759a9f1257`). The configured custom domain is
+  live at `https://screen-reader-smoke-test.sociobot.in/`.
+- Live identity: the HTML references `assets/styles-DFCNwszS.css`; its SHA-256
+  is `9aa74ae1cb86163fc001741b89a247d9d7855dec349cadbc33f86e5d696096b6`,
+  exactly matching `dist/site`. Live URL smoke checks return HTTP 200 with the
+  intended CSP/referrer/nosniff policies, no console errors, and the same
+  desktop/390 px keyboard and 44×44 footer-target results.
 
 ## Known limits
 
