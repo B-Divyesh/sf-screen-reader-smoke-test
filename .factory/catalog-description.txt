@@ -1,1 +1,1 @@
-Catch changed keyboard focus and status messages before release.
+Compare keyboard focus and status messages before releasing a critical web flow.

@@ -1,14 +1,14 @@
 [
   {
     "id": "demo-first-difference",
-    "claim": "The sample playground compares edited transcripts and identifies the first changed event.",
+    "claim": "The sample playground compares edited event lists and identifies the first changed event.",
     "where": "home primary action, /demo, README",
     "test": "npm test -- --testNamePattern @claim:demo-first-difference",
-    "sandbox": "fresh desktop and 390px browser contexts at /demo; edit the received transcript, compare, reset, and run Axe"
+    "sandbox": "fresh desktop and 390px browser contexts entering at /?demo=1; verify redirect, banner, result, edit, compare, reset, focus, and Axe"
   },
   {
     "id": "local-private-flow",
-    "claim": "The CLI captures a local signup flow, redacts the filled value, writes a local report, and rechecks the saved transcript.",
+    "claim": "The CLI captures a local signup flow, redacts the filled value, writes a local report, and rechecks the saved event list.",
     "where": "home facts and report preview, privacy policy, README",
     "test": "npm test -- --testNamePattern @claim:local-private-flow",
     "sandbox": "temporary directory and loopback signup fixture; assert captured events, redaction, report output, and matching recheck"
@@ -43,10 +43,10 @@
   },
   {
     "id": "ci-recheck",
-    "claim": "Automated checks can compare a saved transcript without prompts.",
+    "claim": "Automated checks can compare a saved event list without prompts.",
     "where": "landing event-list section, README usage",
     "test": "npm test -- --testNamePattern @claim:ci-recheck",
-    "sandbox": "fresh packed-package consumer; create a saved transcript, run the CLI with no interactive input, and assert exit 0"
+    "sandbox": "fresh packed-package consumer; create a saved event list, run the CLI with no interactive input, and assert exit 0"
   },
   {
     "id": "cli-output-modes",
@@ -67,7 +67,7 @@
     "claim": "npm run dev:site serves the documentation site locally.",
     "where": "README develop and verify",
     "test": "npm test -- --testNamePattern @claim:local-site",
-    "sandbox": "clean checkout; start the documented command on loopback and request the home page"
+    "sandbox": "globalSetup starts the documented command once, polls HTTP for up to 60 seconds, shares its loopback origin with the suite, and globalTeardown stops it once"
   },
   {
     "id": "origin-boundary",

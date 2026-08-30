@@ -1,0 +1,15 @@
+Deterministic harness repeat check — 2026-08-30 UTC
+
+Command for each run: npm test
+
+Run 1: PASS — 8 files, 27 tests, 49.45 s
+Teardown check: PASS — no `vite --config vite.config.ts` process remained
+
+Run 2: PASS — 8 files, 27 tests, 48.93 s
+Teardown check: PASS — no `vite --config vite.config.ts` process remained
+
+Run 3: PASS — 8 files, 27 tests, 49.46 s
+Teardown check: PASS — no `vite --config vite.config.ts` process remained
+
+Each run started one Vite process in Vitest globalSetup, reused the injected
+origin across build/site tests, and stopped the process group in globalTeardown.

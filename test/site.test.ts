@@ -5,47 +5,51 @@ import { readFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { join, normalize } from "node:path";
 import { promisify } from "node:util";
-import { createServer, type ViteDevServer } from "vite";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, inject, it } from "vitest";
 
 const execFileAsync = promisify(execFile);
 
-let server: ViteDevServer;
 let browser: Browser;
-let origin: string;
+const origin = inject("siteOrigin");
 
 beforeAll(async () => {
-  server = await createServer({ root: "site", server: { host: "127.0.0.1", port: 0 } });
-  await server.listen();
-  const address = server.httpServer?.address();
-  if (!address || typeof address === "string") throw new Error("Site server did not bind.");
-  origin = `http://127.0.0.1:${address.port}`;
   browser = await chromium.launch({ headless: true });
 });
 
 afterAll(async () => {
   await browser?.close();
-  await server?.close();
 });
 
 describe("documentation site", () => {
   it("has no serious accessibility violations or console errors at desktop and mobile", async () => {
+    const routes = [
+      { path: "/", title: "Announce Check — Check browser announcements", canonical: "https://screen-reader-smoke-test.sociobot.in/" },
+      { path: "/demo/", title: "Demo — Announce Check", canonical: "https://screen-reader-smoke-test.sociobot.in/demo/" },
+      { path: "/privacy/", title: "Privacy — Announce Check", canonical: "https://screen-reader-smoke-test.sociobot.in/privacy/" },
+      { path: "/terms/", title: "Terms — Announce Check", canonical: "https://screen-reader-smoke-test.sociobot.in/terms/" }
+    ];
     for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
       const context = await browser.newContext({ viewport, reducedMotion: "reduce", serviceWorkers: "block" });
       const page = await context.newPage();
       const errors: string[] = [];
       page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
       page.on("pageerror", (error) => errors.push(error.message));
-      for (const path of ["/", "/demo/", "/privacy/", "/terms/"]) {
-        await page.goto(`${origin}${path}`, { waitUntil: "domcontentloaded" });
+      for (const route of routes) {
+        await page.goto(`${origin}${route.path}`, { waitUntil: "domcontentloaded" });
         await page.locator("h1").waitFor();
         expect(await page.locator("h1").count()).toBe(1);
         expect(await page.locator("main").count()).toBe(1);
         expect(await page.locator("html").getAttribute("lang")).toBe("en");
-        expect((await page.title()).length).toBeLessThanOrEqual(60);
+        expect(await page.title()).toBe(route.title);
+        expect(route.title.length).toBeLessThanOrEqual(60);
         expect(await page.locator('meta[name="description"]').getAttribute("content")).toBeTruthy();
-        expect(await page.locator('link[rel="canonical"]').getAttribute("href")).toBeTruthy();
+        expect(await page.locator('link[rel="canonical"]').getAttribute("href")).toBe(route.canonical);
+        expect(await page.locator('meta[property="og:title"]').getAttribute("content")).toBe(route.title);
+        expect(await page.locator('meta[property="og:url"]').getAttribute("content")).toBe(route.canonical);
+        expect(await page.locator('meta[name="twitter:title"]').getAttribute("content")).toBe(route.title);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+        expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
+        expect(await page.locator("#route-announcement").textContent()).toBe((await page.locator("h1").textContent())?.trim());
         const headerLinks = await page.locator(".site-header nav a").evaluateAll((links) => links.map((link) => ({
           name: link.textContent?.trim(), href: (link as HTMLAnchorElement).getAttribute("href")
         })));
@@ -55,8 +59,15 @@ describe("documentation site", () => {
           { name: "Limits", href: "/#limits" },
           { name: "Privacy", href: "/privacy/" }
         ]);
-        const footerLinks = await page.locator(".site-footer nav a").all();
-        expect(footerLinks).toHaveLength(3);
+        const footerLinkLocator = page.locator(".site-footer nav a");
+        const footerLinks = await footerLinkLocator.all();
+        expect(await footerLinkLocator.evaluateAll((links) => links.map((link) => ({
+          name: link.textContent?.trim(), href: (link as HTMLAnchorElement).getAttribute("href")
+        })))).toEqual([
+          { name: "Privacy", href: "/privacy/" },
+          { name: "Terms", href: "/terms/" },
+          { name: "Source (GitHub, opens external site)", href: "https://github.com/B-Divyesh/sf-screen-reader-smoke-test" }
+        ]);
         expect(await page.locator(".site-footer").textContent()).toContain("Version 0.1.0 · Built by Param Factory");
         expect(await page.getByRole("link", { name: "Source (GitHub, opens external site)" }).count()).toBe(1);
         for (const link of footerLinks) {
@@ -76,7 +87,7 @@ describe("documentation site", () => {
         expect(await page.evaluate(() => document.activeElement?.classList.contains("skip-link"))).toBe(true);
         await page.keyboard.press("Enter");
         expect(await page.evaluate(() => location.hash)).toBe("#main");
-        if (path === "/") {
+        if (route.path === "/") {
           await page.getByRole("button", { name: "Show first difference" }).click();
           expect(await page.locator(".status-title").textContent()).toBe("First difference found");
         }
@@ -92,7 +103,8 @@ describe("documentation site", () => {
     for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
       const context = await browser.newContext({ viewport, reducedMotion: "reduce", serviceWorkers: "block" });
       const page = await context.newPage();
-      await page.goto(`${origin}/demo/`, { waitUntil: "domcontentloaded" });
+      await page.goto(`${origin}/?demo=1`, { waitUntil: "domcontentloaded" });
+      await page.waitForURL(`${origin}/demo/?demo=1`);
       expect(await page.locator("h1").textContent()).toBe("Compare two sample event lists.");
       expect(await page.locator(".demo-banner").textContent()).toContain("Demo — sample data, nothing is saved");
       expect(await page.locator(".status-title").textContent()).toBe("First difference found");
@@ -119,6 +131,9 @@ describe("documentation site", () => {
       expect(await page.locator(".status-title").textContent()).toBe("No differences found");
       await page.getByRole("button", { name: "Reset demo" }).press("Space");
       expect(await page.locator(".status-title").textContent()).toBe("First difference found");
+      expect(await page.locator("#expected-input").inputValue()).toContain("live (polite): Account created");
+      expect(await page.locator("#received-input").inputValue()).toContain("live (polite): Check your inbox");
+      expect(await page.locator("#expected-input").evaluate((input) => document.activeElement === input)).toBe(true);
       await page.locator("#received-input").fill("changed without an event prefix");
       await page.getByRole("button", { name: "Compare event lists" }).click();
       expect(await page.locator(".status-title").textContent()).toBe("Event list format needs attention");
@@ -187,7 +202,8 @@ describe("documentation site", () => {
     const page = await context.newPage();
     const requests: string[] = [];
     page.on("request", (request) => requests.push(request.url()));
-    await page.goto(`${origin}/demo/`, { waitUntil: "networkidle" });
+    await page.goto(`${origin}/?demo=1`, { waitUntil: "networkidle" });
+    await page.waitForURL(`${origin}/demo/?demo=1`);
     await page.locator("#received-input").fill("focus: Email address — textbox — required");
     await page.getByRole("button", { name: "Compare event lists" }).click();
     await page.getByRole("button", { name: "Reset demo" }).click();

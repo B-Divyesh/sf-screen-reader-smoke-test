@@ -1,0 +1,16 @@
+Harness failure reproduction — 2026-08-30 UTC
+
+Method:
+- Started the documented Vite command with `--logLevel silent` on a reserved loopback port.
+- Polled the page over HTTP and confirmed the expected home document loaded.
+- Waited past the former 15,000 ms stdout-marker deadline.
+- Evaluated the former readiness condition (`output.includes(host:port)`).
+
+Observed result:
+{"httpReady":true,"oldMatcher":false,"oldOutcome":"Vite did not start after 15000 ms","capturedOutput":"> screen-reader-smoke-test@0.1.0 dev:site\n> vite --config vite.config.ts --host 127.0.0.1 --port 33553 --strictPort --logLevel silent"}
+
+Conclusion:
+The former harness could report “Vite did not start” while the site was already
+serving successfully. The replacement polls the expected page over HTTP for up
+to 60 seconds, shares one server origin with all tests, and tears down its one
+process group after the suite.
