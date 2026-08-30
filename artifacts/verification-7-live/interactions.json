@@ -1,0 +1,240 @@
+{
+  "keyboard": {
+    "desktop": {
+      "initial": {
+        "tag": "H1",
+        "id": "hero-title",
+        "text": "Catch changed keyboard focus and status messages."
+      },
+      "skipFocus": {
+        "text": "Skip to main content",
+        "outline": "rgb(255, 255, 255) solid 0px",
+        "offset": "0px",
+        "visible": false
+      },
+      "afterSkip": {
+        "id": "",
+        "tag": "BODY",
+        "hash": "#main"
+      },
+      "sequence": [
+        {
+          "tag": "A",
+          "text": "Try it with sample data",
+          "href": "/?demo=1"
+        },
+        {
+          "tag": "CODE",
+          "text": "npm i -D https://screen-reader-smoke-test.sociobot.in/downlo",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Copy install command",
+          "href": null
+        },
+        {
+          "tag": "PRE",
+          "text": "import { defineConfig } from \"screen-reader-smoke-test\"; exp",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show matching report",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show first difference",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show empty capture",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show browser error",
+          "href": null
+        },
+        {
+          "tag": "A",
+          "text": "Download package (.tgz)",
+          "href": "/downloads/screen-reader-smoke-test-0.1.0.tgz"
+        },
+        {
+          "tag": "A",
+          "text": "Privacy",
+          "href": "/privacy/"
+        },
+        {
+          "tag": "A",
+          "text": "Terms",
+          "href": "/terms/"
+        },
+        {
+          "tag": "A",
+          "text": "Source (GitHub, opens external site)",
+          "href": "https://github.com/B-Divyesh/sf-screen-reader-smoke-test"
+        },
+        {
+          "tag": "BODY",
+          "text": "Skip to main content Catch changed keyboard focus and status",
+          "href": null
+        },
+        {
+          "tag": "A",
+          "text": "Skip to main content",
+          "href": "#main"
+        },
+        {
+          "tag": "A",
+          "text": "Announce Check",
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "text": "Demo",
+          "href": "/demo/"
+        }
+      ]
+    },
+    "mobile": {
+      "initial": {
+        "tag": "H1",
+        "id": "hero-title",
+        "text": "Catch changed keyboard focus and status messages."
+      },
+      "skipFocus": {
+        "text": "Skip to main content",
+        "outline": "rgb(255, 255, 255) solid 0px",
+        "offset": "0px",
+        "visible": false
+      },
+      "afterSkip": {
+        "id": "",
+        "tag": "BODY",
+        "hash": "#main"
+      },
+      "sequence": [
+        {
+          "tag": "A",
+          "text": "Try it with sample data",
+          "href": "/?demo=1"
+        },
+        {
+          "tag": "CODE",
+          "text": "npm i -D https://screen-reader-smoke-test.sociobot.in/downlo",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Copy install command",
+          "href": null
+        },
+        {
+          "tag": "PRE",
+          "text": "import { defineConfig } from \"screen-reader-smoke-test\"; exp",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show matching report",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show first difference",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show empty capture",
+          "href": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Show browser error",
+          "href": null
+        },
+        {
+          "tag": "A",
+          "text": "Download package (.tgz)",
+          "href": "/downloads/screen-reader-smoke-test-0.1.0.tgz"
+        },
+        {
+          "tag": "A",
+          "text": "Privacy",
+          "href": "/privacy/"
+        },
+        {
+          "tag": "A",
+          "text": "Terms",
+          "href": "/terms/"
+        },
+        {
+          "tag": "A",
+          "text": "Source (GitHub, opens external site)",
+          "href": "https://github.com/B-Divyesh/sf-screen-reader-smoke-test"
+        },
+        {
+          "tag": "BODY",
+          "text": "Skip to main content Catch changed keyboard focus and status",
+          "href": null
+        },
+        {
+          "tag": "A",
+          "text": "Skip to main content",
+          "href": "#main"
+        },
+        {
+          "tag": "A",
+          "text": "Announce Check",
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "text": "Demo",
+          "href": "/demo/"
+        }
+      ]
+    }
+  },
+  "demo": {
+    "direct": {
+      "url": "https://screen-reader-smoke-test.sociobot.in/demo/?demo=1",
+      "banner": true,
+      "expected": "focus: Email address — textbox — required\nfocus: Create account — button\nlive (polite): Account created",
+      "received": "focus: Email address — textbox — required\nfocus: Create account — button\nlive (polite): Check your inbox"
+    },
+    "match": true,
+    "invalid": {
+      "title": "Event list format needs attention",
+      "help": "Line 1 must start with focus: or live (polite):."
+    },
+    "resetRestored": true,
+    "resetFocus": {
+      "tag": "TEXTAREA",
+      "id": "expected-input",
+      "visible": true
+    },
+    "storage": {
+      "cookie": "",
+      "local": 0,
+      "session": 0,
+      "dbs": 0
+    },
+    "requests": [
+      "https://screen-reader-smoke-test.sociobot.in/?demo=1",
+      "https://screen-reader-smoke-test.sociobot.in/assets/main-Rud9xX_U.js",
+      "https://screen-reader-smoke-test.sociobot.in/assets/route-DZAM4nUc.js",
+      "https://screen-reader-smoke-test.sociobot.in/assets/route-BzbxIJjW.css",
+      "https://screen-reader-smoke-test.sociobot.in/announce-field.webp",
+      "https://screen-reader-smoke-test.sociobot.in/demo/?demo=1",
+      "https://screen-reader-smoke-test.sociobot.in/assets/demo-tO5X-Kv7.js"
+    ],
+    "thirdParty": [],
+    "errors": []
+  }
+}

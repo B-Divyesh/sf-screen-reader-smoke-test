@@ -1,0 +1,530 @@
+[
+  {
+    "viewport": "desktop",
+    "path": "/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:47 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Announce Check — Check browser announcements",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "Catch changed keyboard focus and status messages."
+      },
+      {
+        "level": 2,
+        "text": "Review each expected event."
+      },
+      {
+        "level": 2,
+        "text": "Find the first changed event."
+      },
+      {
+        "level": 3,
+        "text": "Expected"
+      },
+      {
+        "level": 3,
+        "text": "Received"
+      },
+      {
+        "level": 2,
+        "text": "What Announce Check can and cannot prove."
+      },
+      {
+        "level": 3,
+        "text": "What it catches"
+      },
+      {
+        "level": 3,
+        "text": "What it does not claim"
+      },
+      {
+        "level": 2,
+        "text": "Install the tested package."
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "desktop",
+    "path": "/demo/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:49 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Demo — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "Compare two sample event lists."
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "desktop",
+    "path": "/privacy/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:50 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Privacy — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "How Announce Check handles data."
+      },
+      {
+        "level": 2,
+        "text": "Local files"
+      },
+      {
+        "level": 2,
+        "text": "Website storage"
+      },
+      {
+        "level": 2,
+        "text": "Your target application"
+      },
+      {
+        "level": 2,
+        "text": "Contact"
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "desktop",
+    "path": "/terms/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:52 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Terms — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "Terms for using Announce Check."
+      },
+      {
+        "level": 2,
+        "text": "Authorized use"
+      },
+      {
+        "level": 2,
+        "text": "Scope of results"
+      },
+      {
+        "level": 2,
+        "text": "No warranty"
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "desktop",
+    "path": "/not-a-real-route",
+    "status": 404,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-length": "3011",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:53 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Page not found — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "This page does not exist."
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "mobile",
+    "path": "/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:55 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Announce Check — Check browser announcements",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "Catch changed keyboard focus and status messages."
+      },
+      {
+        "level": 2,
+        "text": "Review each expected event."
+      },
+      {
+        "level": 2,
+        "text": "Find the first changed event."
+      },
+      {
+        "level": 3,
+        "text": "Expected"
+      },
+      {
+        "level": 3,
+        "text": "Received"
+      },
+      {
+        "level": 2,
+        "text": "What Announce Check can and cannot prove."
+      },
+      {
+        "level": 3,
+        "text": "What it catches"
+      },
+      {
+        "level": 3,
+        "text": "What it does not claim"
+      },
+      {
+        "level": 2,
+        "text": "Install the tested package."
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "mobile",
+    "path": "/demo/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:56 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Demo — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "Compare two sample event lists."
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "mobile",
+    "path": "/privacy/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:58 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Privacy — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "How Announce Check handles data."
+      },
+      {
+        "level": 2,
+        "text": "Local files"
+      },
+      {
+        "level": 2,
+        "text": "Website storage"
+      },
+      {
+        "level": 2,
+        "text": "Your target application"
+      },
+      {
+        "level": 2,
+        "text": "Contact"
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "mobile",
+    "path": "/terms/",
+    "status": 200,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:45:58 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Terms — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "Terms for using Announce Check."
+      },
+      {
+        "level": 2,
+        "text": "Authorized use"
+      },
+      {
+        "level": 2,
+        "text": "Scope of results"
+      },
+      {
+        "level": 2,
+        "text": "No warranty"
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  },
+  {
+    "viewport": "mobile",
+    "path": "/not-a-real-route",
+    "status": 404,
+    "headers": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-length": "3011",
+      "content-security-policy": "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Sun, 30 Aug 2026 05:46:00 GMT",
+      "etag": "\"15768644\"",
+      "last-modified": "Sun, 30 Aug 2026 05:23:15 GMT",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=31536000; includeSubDomains",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "lang": "en",
+    "title": "Page not found — Announce Check",
+    "h1": 1,
+    "main": 1,
+    "headings": [
+      {
+        "level": 1,
+        "text": "This page does not exist."
+      }
+    ],
+    "missingAlt": 0,
+    "overflow": 0,
+    "bodyFont": "16px",
+    "smallTargets": [],
+    "motion": 0,
+    "scrollBehavior": "auto",
+    "axe": [],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failed": [],
+    "thirdParty": []
+  }
+]
