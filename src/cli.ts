@@ -15,13 +15,13 @@ interface CliOptions {
 
 const HELP = `Announce Check 0.1.0
 
-Verify focus semantics and ARIA live-region changes for one browser flow.
+Verify keyboard-focus and ARIA status-message changes for one browser flow.
 
 Usage:
   announce-check [config] [options]
 
 Options:
-  --update             Record and overwrite the expected transcript
+  --update             Record and overwrite the expected event list
   --json               Print a machine-readable result to stdout
   --report <directory> Write the local HTML report to this directory
   --no-report          Do not write an HTML report
@@ -29,12 +29,12 @@ Options:
   --version, -v        Print the version
 
 Exit codes:
-  0  Transcript matched, or was updated
-  1  First transcript divergence found
+  0  Event list matched, or was updated
+  1  First event-list difference found
   2  Configuration, target, or browser error
 
 Remote targets are blocked unless the config sets allowRemote: true.
-Filled values are never written to transcripts, JSON output, or reports.`;
+Filled values are never written to event lists, JSON output, or reports.`;
 
 export function parseArgs(args: string[]): CliOptions {
   const options: CliOptions = { update: false, json: false, writeReport: true, help: false, version: false };

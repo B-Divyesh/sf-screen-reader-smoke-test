@@ -10,9 +10,9 @@ data.” The query URL and direct `/demo/` URL open the same populated state.
 
 ## Sample data
 
-The playground contains an approved three-event signup transcript and a
-received transcript with a changed status announcement at event 3. Both inputs
-are editable. “Compare transcripts” runs the package's exported comparison
+The playground contains an approved three-event signup event list and a
+received event list with a changed status message at event 3. Both inputs
+are editable. “Compare event lists” runs the package's exported comparison
 logic and marks the first changed event.
 
 ## Isolation and reset

@@ -25,6 +25,7 @@ describe("release metadata", () => {
       expect(html).toMatch(/<meta name="twitter:image" content="https:\/\/screen-reader-smoke-test\.sociobot\.in\/og-image\.webp">/);
       expect(html).toContain("Version 0.1.0 · Built by Param Factory");
       expect(html).toContain("Source (GitHub, opens external site)");
+      expect(html).toMatch(/href="\/demo\/">Demo<\/a>\s*<a href="\/#contract">How it works<\/a>\s*<a href="\/#limits">Limits<\/a>\s*<a href="\/privacy\/"/);
     }
   });
 });

@@ -22,7 +22,7 @@ function rows(events: TranscriptEvent[], firstDifference: number | null): string
 }
 
 export function renderReport(result: CheckResult): string {
-  const title = result.matches ? "Contract matched" : "Contract diverged";
+  const title = result.matches ? "No differences found" : "First difference found";
   const statusClass = result.matches ? "pass" : "fail";
   return `<!doctype html>
 <html lang="en">

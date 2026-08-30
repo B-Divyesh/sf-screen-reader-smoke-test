@@ -26,16 +26,16 @@
     <p class="route-announcement" id="route-announcement" role="status" aria-atomic="true"></p>
     <header class="site-header shell">
       <a class="brand" href="/" aria-label="Announce Check home"><svg aria-hidden="true" viewBox="0 0 48 48" width="40" height="40"><circle cx="13" cy="24" r="7"/><path d="M20 24h9M30 17c4 4 4 10 0 14M35 12c7 7 7 17 0 24"/></svg><span>Announce Check</span></a>
-      <nav aria-label="Primary"><a class="nav-install" href="/demo/">Demo</a><a href="/privacy/" aria-current="page">Privacy</a></nav>
+      <nav aria-label="Primary"><a href="/demo/">Demo</a><a href="/#contract">How it works</a><a href="/#limits">Limits</a><a href="/privacy/" aria-current="page">Privacy</a></nav>
     </header>
     <main id="main" class="legal-main shell">
       <p class="kicker">Effective 27 August 2026</p>
       <h1 tabindex="-1">How Announce Check handles data.</h1>
       <div class="legal-copy">
-        <p>Announce Check has no accounts, analytics, tracking pixels, cookies, or hosted test service. The CLI does not send reports, transcripts, form values, or target URLs to us.</p>
+        <p>Announce Check has no accounts, tracking pixels, cookies, or hosted test service. The CLI does not send reports, event lists, form values, or target URLs to us.</p>
         <h2>Local files</h2>
-        <p>The CLI reads your local configuration and expected transcript. It writes a local HTML report unless you pass <code>--no-report</code>.</p>
-        <p><code>--update</code> writes observed events to the expected transcript. Filled form values are redacted from observed event text and errors.</p>
+        <p>The CLI reads your local configuration and approved event list. It writes a local HTML report unless you pass <code>--no-report</code>.</p>
+        <p><code>--update</code> writes observed events to the approved event list. Filled form values are redacted from observed event text and errors.</p>
         <h2>Website storage</h2>
         <p>The site caches public pages and assets for offline reading. The demo does not store form input or personal information.</p>
         <p>Remove the public cache with your browser’s site-data controls.</p>

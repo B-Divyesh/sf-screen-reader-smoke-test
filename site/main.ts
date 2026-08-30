@@ -22,7 +22,7 @@ const receivedByMode: Record<string, string[]> = {
 };
 
 const listMarkup = (items: string[], difference: number | null, emptyMessage: string) => {
-  if (items.length === 0) return `<li class="empty-state"><strong>${emptyMessage}</strong><span>Choose another state to inspect a transcript.</span></li>`;
+  if (items.length === 0) return `<li class="empty-state"><strong>${emptyMessage}</strong><span>Choose another state to inspect an event list.</span></li>`;
   return items.map((item, index) => `<li${difference === index ? ' class="different"' : ""}><code>${item}</code></li>`).join("");
 };
 
@@ -40,7 +40,7 @@ function showDemo(mode: string) {
   const isError = mode === "error";
   const isEmpty = mode === "empty";
   const isMatch = mode === "match";
-  expectedList.innerHTML = listMarkup(isError ? [] : expected, difference, isError ? "Expected transcript unavailable" : "No expected events");
+  expectedList.innerHTML = listMarkup(isError ? [] : expected, difference, isError ? "Expected event list unavailable" : "No expected events");
   receivedList.innerHTML = listMarkup(received, difference, isError ? "Chromium could not start" : "No accessibility events captured");
   statusTitle.textContent = isMatch ? "No differences found" : isError ? "Check could not run" : isEmpty ? "No events captured" : "First difference found";
   statusSymbol.textContent = isMatch ? "✓" : isEmpty ? "○" : "×";

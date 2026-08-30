@@ -1,31 +1,28 @@
 # Announce Check
 
-Announce Check tests the announcement contract for one critical browser flow.
-It drives Chromium and records focus semantics and ARIA live-region changes.
-It compares them with a checked-in transcript and writes a local HTML report.
+Announce Check compares a saved list of keyboard-focus and status-message events
+for one critical browser flow. It runs Chromium, compares the new event list
+with the approved list, and writes a local HTML report.
 
 It is for small web teams checking a signup, search, or form flow before release.
 
-> Announce Check observes browser accessibility semantics and ARIA live-region
-> changes. It does **not** emulate NVDA, VoiceOver, JAWS, or certify WCAG
+> Announce Check observes browser accessibility events. It does **not** emulate
+> NVDA, VoiceOver, JAWS, or certify WCAG
 > conformance. Keep a short manual screen-reader check in your release process.
 
 ## Install
 
-The npm registry entry is not published yet. Install the tested versioned
-tarball from the documentation site:
+Install version 0.1.0 from the documentation site:
 
 ```sh
 npm install --save-dev https://screen-reader-smoke-test.sociobot.in/downloads/screen-reader-smoke-test-0.1.0.tgz playwright@1.58.2
 npx playwright install chromium
 ```
 
-The factory can publish the same tarball to npm after release approval.
-
 ## Try the sample
 
 Open <https://screen-reader-smoke-test.sociobot.in/demo/>. It loads an approved
-signup transcript and a changed received transcript in one click. Edit either
+signup event list and a changed received event list in one click. Edit either
 input to see the first changed event. Reset restores the bundled sample.
 
 The guide and playground work offline after one online visit. The demo stores
@@ -50,7 +47,7 @@ export default defineConfig({
 });
 ```
 
-Record the first local contract, review it, and check it in:
+Record the first local event list, review it, and check it in:
 
 ```sh
 npx announce-check --update
@@ -63,7 +60,7 @@ Then run it in automated checks:
 npx announce-check
 ```
 
-The command exits `0` on a match or update. It exits `1` on a transcript
+The command exits `0` on a match or update. It exits `1` on an event-list
 difference and `2` for invalid input or a browser failure. It writes
 `announce-check-report/index.html` by default. `--json` writes one result to
 stdout. Use `--report <directory>` to move the report. Use `--no-report` to
@@ -111,8 +108,8 @@ npm pack --dry-run
 `dist/site/`. The versioned download is in `dist/site/downloads/`. Run the site
 locally with `npm run dev:site`.
 
-The project has no telemetry, accounts, cookies, remote fixture storage, or
-third-party runtime assets. Reports and transcripts stay on your machine.
+The project has no tracking, accounts, cookies, remote fixture storage, or
+third-party runtime assets. Reports and event lists stay on your machine.
 
 ## License
 

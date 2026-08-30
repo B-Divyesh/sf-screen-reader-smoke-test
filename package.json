@@ -1,7 +1,7 @@
 {
   "name": "screen-reader-smoke-test",
   "version": "0.1.0",
-  "description": "A reviewable focus and ARIA live-region transcript contract for one critical web flow.",
+  "description": "Compare saved keyboard-focus and status-message event lists for one critical web flow.",
   "type": "module",
   "license": "MIT",
   "author": "Sociobot (Param Factory)",

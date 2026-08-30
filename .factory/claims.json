@@ -49,6 +49,27 @@
     "sandbox": "fresh packed-package consumer; create a saved transcript, run the CLI with no interactive input, and assert exit 0"
   },
   {
+    "id": "cli-output-modes",
+    "claim": "The CLI writes its default report, a selected report directory, JSON output, or no report as requested.",
+    "where": "README usage, privacy policy",
+    "test": "npm test -- --testNamePattern @claim:cli-output-modes",
+    "sandbox": "fresh packed-package consumer; assert the default report path, valid JSON stdout, a custom report directory, and no output for --no-report"
+  },
+  {
+    "id": "build-artifacts",
+    "claim": "npm run build produces the publishable library and the static site at dist/site/.",
+    "where": "README develop and verify",
+    "test": "npm test -- --testNamePattern @claim:build-artifacts",
+    "sandbox": "clean checkout; run the documented build and assert ESM, CommonJS, declarations, site index, and the versioned download"
+  },
+  {
+    "id": "local-site",
+    "claim": "npm run dev:site serves the documentation site locally.",
+    "where": "README develop and verify",
+    "test": "npm test -- --testNamePattern @claim:local-site",
+    "sandbox": "clean checkout; start the documented command on loopback and request the home page"
+  },
+  {
     "id": "origin-boundary",
     "claim": "Remote target URLs require explicit authorization; loopback targets work by default.",
     "where": "privacy policy, README",

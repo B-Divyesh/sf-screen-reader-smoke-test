@@ -1,1 +1,1 @@
-Catch changed focus and screen-reader status messages before release.
+Catch changed keyboard focus and status messages before release.

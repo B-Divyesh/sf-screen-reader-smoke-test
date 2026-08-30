@@ -104,7 +104,7 @@ afterAll(async () => {
 });
 
 describe("published package consumer", () => {
-  it("@claim:download-package @claim:cli-exit-codes @claim:ci-recheck @claim:package-formats installs the site tarball and runs every package entry without prompts", async () => {
+  it("@claim:download-package @claim:cli-exit-codes @claim:ci-recheck @claim:cli-output-modes @claim:package-formats installs the site tarball and runs every package entry without prompts", async () => {
     const consumer = await mkdtemp(join(tmpdir(), "announce-test-consumer-"));
     try {
       await execFileAsync("npm", ["run", "build"], { cwd: repository });
@@ -136,7 +136,7 @@ describe("published package consumer", () => {
       expect(commonJs.stdout.trim()).toBe("true");
       expect(await readFile(join(consumer, "node_modules", "screen-reader-smoke-test", "dist", "library", "index.d.ts"), "utf8")).toContain("declare function runCheck");
       const help = await runBin(["--help"]);
-      expect(help.stdout).toContain("Verify focus semantics and ARIA live-region changes");
+      expect(help.stdout).toContain("Verify keyboard-focus and ARIA status-message changes");
 
       const updated = await runBin(["announce-check.config.mjs", "--update", "--json", "--no-report"]);
       expect(JSON.parse(updated.stdout)).toMatchObject({ updated: true, matches: true });
@@ -144,6 +144,18 @@ describe("published package consumer", () => {
 
       const checked = await runBin(["announce-check.config.mjs", "--json", "--no-report"]);
       expect(JSON.parse(checked.stdout)).toMatchObject({ updated: false, matches: true });
+
+      const defaultReport = await runBin(["announce-check.config.mjs", "--json"]);
+      expect(JSON.parse(defaultReport.stdout)).toMatchObject({ updated: false, matches: true });
+      expect((await lstat(join(consumer, "announce-check-report", "index.html"))).isFile()).toBe(true);
+      const customReport = join(consumer, "chosen-report");
+      const customOutput = await runBin(["announce-check.config.mjs", "--json", "--report", customReport]);
+      expect(JSON.parse(customOutput.stdout)).toMatchObject({ updated: false, matches: true });
+      expect((await lstat(join(customReport, "index.html"))).isFile()).toBe(true);
+      await rm(join(consumer, "announce-check-report"), { recursive: true, force: true });
+      const noReport = await runBin(["announce-check.config.mjs", "--json", "--no-report"]);
+      expect(JSON.parse(noReport.stdout)).toMatchObject({ updated: false, matches: true });
+      await expect(lstat(join(consumer, "announce-check-report", "index.html"))).rejects.toMatchObject({ code: "ENOENT" });
 
       submitValue = "Register now";
       const changed = await runBin(["announce-check.config.mjs", "--json", "--no-report"]).catch((error: unknown) => error as { code: number; stdout: string });

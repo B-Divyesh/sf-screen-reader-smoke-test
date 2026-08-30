@@ -3,16 +3,16 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Edit two sample accessibility transcripts and see the first focus or live-region change.">
+    <meta name="description" content="Edit two sample event lists and see the first changed keyboard-focus or status-message event.">
     <meta name="theme-color" content="#f4f0e6">
     <meta property="og:title" content="Demo — Announce Check">
-    <meta property="og:description" content="Edit two sample accessibility transcripts and see the first changed event.">
+    <meta property="og:description" content="Edit two sample event lists and see the first changed event.">
     <meta property="og:image" content="https://screen-reader-smoke-test.sociobot.in/og-image.webp">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://screen-reader-smoke-test.sociobot.in/demo/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Demo — Announce Check">
-    <meta name="twitter:description" content="Edit two sample accessibility transcripts and see the first changed event.">
+    <meta name="twitter:description" content="Edit two sample event lists and see the first changed event.">
     <meta name="twitter:image" content="https://screen-reader-smoke-test.sociobot.in/og-image.webp">
     <title>Demo — Announce Check</title>
     <link rel="canonical" href="https://screen-reader-smoke-test.sociobot.in/demo/">
@@ -40,41 +40,44 @@
         <svg aria-hidden="true" viewBox="0 0 48 48" width="40" height="40"><circle cx="13" cy="24" r="7"/><path d="M20 24h9M30 17c4 4 4 10 0 14M35 12c7 7 7 17 0 24"/></svg>
         <span>Announce Check</span>
       </a>
-      <nav aria-label="Primary"><a aria-current="page" href="/demo/">Demo</a><a class="nav-install" href="/#install">Install</a></nav>
+      <nav aria-label="Primary"><a aria-current="page" href="/demo/">Demo</a><a href="/#contract">How it works</a><a href="/#limits">Limits</a><a href="/privacy/">Privacy</a></nav>
     </header>
 
     <main id="main" class="playground-main shell">
       <div class="playground-intro">
         <p class="kicker">Signup confirmation / sample flow</p>
-        <h1 tabindex="-1">Compare an announcement transcript.</h1>
-        <p class="lede">Edit the received events, then compare them with the approved focus and live-region sequence.</p>
+        <h1 tabindex="-1">Compare two sample event lists.</h1>
+        <p class="lede">Edit the received events, then compare them with the approved keyboard-focus and status-message events.</p>
       </div>
-
-      <form class="playground" id="playground-form">
-        <div class="playground-inputs">
-          <label>Expected transcript<textarea id="expected-input" rows="7" spellcheck="false" aria-describedby="input-help">focus: Email address — textbox — required
-focus: Create account — button
-live (polite): Account created</textarea></label>
-          <label>Received transcript<textarea id="received-input" rows="7" spellcheck="false" aria-describedby="input-help">focus: Email address — textbox — required
-focus: Create account — button
-live (polite): Check your inbox</textarea></label>
-        </div>
-        <p class="input-help" id="input-help">Use one event per line. Start each line with <code>focus:</code> or <code>live (polite):</code>.</p>
-        <button class="instrument-button" type="submit">Compare transcripts</button>
-      </form>
 
       <section class="playground-result" aria-labelledby="result-title" aria-live="polite" aria-atomic="true">
         <div class="report-topline">
           <p><span class="status-symbol">×</span> <strong class="status-title" id="result-title">First difference found</strong></p>
           <span class="event-count">3 / 3 events</span>
         </div>
-        <div class="transcripts">
-          <section aria-labelledby="expected-title"><h2 id="expected-title">Expected</h2><ol class="expected-list"></ol></section>
-          <section aria-labelledby="received-title"><h2 id="received-title">Received</h2><ol class="received-list"></ol></section>
+        <div class="difference-summary">
+          <p class="report-action">First difference at event 3.</p>
+          <dl>
+            <div><dt>Expected status message</dt><dd class="expected-difference">Account created</dd></div>
+            <div><dt>Received status message</dt><dd class="received-difference">Check your inbox</dd></div>
+          </dl>
         </div>
-        <p class="report-action">First difference at event 3.</p>
       </section>
-      <p class="demo-scope"><strong>This browser sample compares transcript data only.</strong> The downloaded CLI drives Chromium and captures the events.</p>
+
+      <form class="playground" id="playground-form">
+        <div class="playground-inputs">
+          <label>Expected event list<textarea id="expected-input" rows="7" spellcheck="false" aria-describedby="input-help">focus: Email address — textbox — required
+focus: Create account — button
+live (polite): Account created</textarea></label>
+          <label>Received event list<textarea id="received-input" rows="7" spellcheck="false" aria-describedby="input-help">focus: Email address — textbox — required
+focus: Create account — button
+live (polite): Check your inbox</textarea></label>
+        </div>
+        <p class="input-help" id="input-help">Use one event per line. Start each line with <code>focus:</code> or <code>live (polite):</code>.</p>
+        <button class="instrument-button" type="submit">Compare event lists</button>
+      </form>
+
+      <p class="demo-scope"><strong>This browser sample compares event-list data only.</strong> The downloaded CLI drives Chromium and captures the events.</p>
     </main>
 
     <footer class="site-footer shell">

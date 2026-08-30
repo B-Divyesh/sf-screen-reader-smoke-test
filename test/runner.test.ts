@@ -53,7 +53,10 @@ describe("documented signup flow", () => {
     ]);
     const serialized = await readFile(expectedPath, "utf8");
     expect(serialized).not.toContain("pilot@example.test");
-    expect(await readFile(join(reportDirectory, "index.html"), "utf8")).toContain("Contract matched");
+    const report = await readFile(join(reportDirectory, "index.html"), "utf8");
+    expect(report).toContain("No differences found");
+    expect(report).not.toContain("Contract matched");
+    expect(report).not.toContain("Contract diverged");
 
     const verified = await runCheck({ configPath, writeReport: false });
     expect(verified.matches).toBe(true);

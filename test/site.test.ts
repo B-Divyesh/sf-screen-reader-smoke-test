@@ -46,6 +46,15 @@ describe("documentation site", () => {
         expect(await page.locator('meta[name="description"]').getAttribute("content")).toBeTruthy();
         expect(await page.locator('link[rel="canonical"]').getAttribute("href")).toBeTruthy();
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+        const headerLinks = await page.locator(".site-header nav a").evaluateAll((links) => links.map((link) => ({
+          name: link.textContent?.trim(), href: (link as HTMLAnchorElement).getAttribute("href")
+        })));
+        expect(headerLinks).toEqual([
+          { name: "Demo", href: "/demo/" },
+          { name: "How it works", href: "/#contract" },
+          { name: "Limits", href: "/#limits" },
+          { name: "Privacy", href: "/privacy/" }
+        ]);
         const footerLinks = await page.locator(".site-footer nav a").all();
         expect(footerLinks).toHaveLength(3);
         expect(await page.locator(".site-footer").textContent()).toContain("Version 0.1.0 · Built by Param Factory");
@@ -79,28 +88,40 @@ describe("documentation site", () => {
     }
   }, 30_000);
 
-  it("@claim:demo-first-difference opens a populated sandbox and compares edited transcripts at desktop and mobile", async () => {
+  it("@claim:demo-first-difference opens a populated sandbox and compares edited event lists at desktop and mobile", async () => {
     for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
       const context = await browser.newContext({ viewport, reducedMotion: "reduce", serviceWorkers: "block" });
       const page = await context.newPage();
       await page.goto(`${origin}/demo/`, { waitUntil: "domcontentloaded" });
-      expect(await page.locator("h1").textContent()).toBe("Compare an announcement transcript.");
+      expect(await page.locator("h1").textContent()).toBe("Compare two sample event lists.");
       expect(await page.locator(".demo-banner").textContent()).toContain("Demo — sample data, nothing is saved");
       expect(await page.locator(".status-title").textContent()).toBe("First difference found");
       expect(await page.locator(".report-action").textContent()).toBe("First difference at event 3.");
+      expect(await page.locator(".expected-difference").textContent()).toBe("Account created");
+      expect(await page.locator(".received-difference").textContent()).toBe("Check your inbox");
+      const resultBox = await page.locator(".playground-result").boundingBox();
+      expect(resultBox).not.toBeNull();
+      expect(resultBox!.y).toBeLessThan(viewport.height);
+      expect(resultBox!.y + resultBox!.height).toBeGreaterThan(0);
+      for (const selector of [".report-action", ".expected-difference", ".received-difference"]) {
+        const box = await page.locator(selector).boundingBox();
+        expect(box).not.toBeNull();
+        expect(box!.y).toBeGreaterThanOrEqual(0);
+        expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height);
+      }
 
       await page.locator("#received-input").fill([
         "focus: Email address — textbox — required",
         "focus: Create account — button",
         "live (polite): Account created"
       ].join("\n"));
-      await page.getByRole("button", { name: "Compare transcripts" }).press("Enter");
+      await page.getByRole("button", { name: "Compare event lists" }).press("Enter");
       expect(await page.locator(".status-title").textContent()).toBe("No differences found");
       await page.getByRole("button", { name: "Reset demo" }).press("Space");
       expect(await page.locator(".status-title").textContent()).toBe("First difference found");
       await page.locator("#received-input").fill("changed without an event prefix");
-      await page.getByRole("button", { name: "Compare transcripts" }).click();
-      expect(await page.locator(".status-title").textContent()).toBe("Transcript format needs attention");
+      await page.getByRole("button", { name: "Compare event lists" }).click();
+      expect(await page.locator(".status-title").textContent()).toBe("Event list format needs attention");
       expect(await page.locator(".report-action").textContent()).toContain("Line 1 must start with");
       await page.getByRole("button", { name: "Reset demo" }).click();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
@@ -111,22 +132,43 @@ describe("documentation site", () => {
     }
   }, 30_000);
 
+  it("keeps the first action and tested privacy, offline, and price facts inside the first screen", async () => {
+    for (const viewport of [{ width: 1440, height: 900 }, { width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+      const context = await browser.newContext({ viewport, reducedMotion: "reduce", serviceWorkers: "block" });
+      const page = await context.newPage();
+      await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
+      expect(await page.getByRole("link", { name: "Try it with sample data" }).isVisible()).toBe(true);
+      expect(await page.locator(".hero-facts li").allTextContents()).toEqual([
+        "Filled values are redacted.",
+        "Works offline after your first visit.",
+        "Free under the MIT License."
+      ]);
+      for (const selector of [".hero-primary", ".hero-action-row p", ".hero-facts"]) {
+        const box = await page.locator(selector).boundingBox();
+        expect(box).not.toBeNull();
+        expect(box!.y).toBeGreaterThanOrEqual(0);
+        expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height);
+      }
+      await context.close();
+    }
+  });
+
   it("moves focus to each route heading and announces the destination", async () => {
     const context = await browser.newContext({ serviceWorkers: "block" });
     const page = await context.newPage();
     await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
     expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
-    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed focus and live announcements.");
+    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed keyboard focus and status messages.");
 
     await page.getByRole("link", { name: "Try it with sample data" }).click();
     await page.waitForURL(/\/demo\/\?demo=1$/);
     expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
-    expect(await page.locator("#route-announcement").textContent()).toBe("Compare an announcement transcript.");
+    expect(await page.locator("#route-announcement").textContent()).toBe("Compare two sample event lists.");
 
     await page.goBack({ waitUntil: "domcontentloaded" });
     await page.locator("h1").waitFor();
     expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
-    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed focus and live announcements.");
+    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed keyboard focus and status messages.");
     await context.close();
   });
 
@@ -147,7 +189,7 @@ describe("documentation site", () => {
     page.on("request", (request) => requests.push(request.url()));
     await page.goto(`${origin}/demo/`, { waitUntil: "networkidle" });
     await page.locator("#received-input").fill("focus: Email address — textbox — required");
-    await page.getByRole("button", { name: "Compare transcripts" }).click();
+    await page.getByRole("button", { name: "Compare event lists" }).click();
     await page.getByRole("button", { name: "Reset demo" }).click();
 
     expect(requests.length).toBeGreaterThan(0);
@@ -248,7 +290,7 @@ describe("documentation site", () => {
         "focus: Create account — button",
         "live (polite): Account created"
       ].join("\n"));
-      await page.getByRole("button", { name: "Compare transcripts" }).click();
+      await page.getByRole("button", { name: "Compare event lists" }).click();
       expect(await page.locator(".status-title").textContent()).toBe("No differences found");
       await context.setOffline(false);
 
@@ -269,7 +311,7 @@ describe("documentation site", () => {
         return keys.includes(newCache) && !keys.includes(oldCache);
       }, { oldCache: initialCache!, newCache: updatedCache }, { timeout: 10_000 });
       await page.goto(builtOrigin, { waitUntil: "domcontentloaded", timeout: 10_000 });
-      expect(await page.locator("h1").textContent()).toContain("Catch changed focus");
+      expect(await page.locator("h1").textContent()).toContain("Catch changed keyboard focus");
       expect(errors).toEqual([]);
     } finally {
       await context.close();
