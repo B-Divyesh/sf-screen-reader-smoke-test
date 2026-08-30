@@ -131,12 +131,21 @@ function installObserver(): void {
   const browserWindow = window as typeof window & { __announceCheckPush: Push };
   const clean = (value: string | null | undefined) => (value ?? "").replace(/\s+/g, " ").trim();
 
-  const nameOf = (element: Element): string => {
+  // This implements the name sources that are observable from page script:
+  // authored labels win, then native controls, then text alternatives from
+  // descendants. In particular, a native button may get its entire accessible
+  // name from a child <img alt>, even when its textContent is empty.
+  const alternativeOf = (element: Element, visited = new Set<Element>()): string => {
+    if (visited.has(element) || element.getAttribute("aria-hidden") === "true" || element.getAttribute("role") === "presentation") return "";
+    visited.add(element);
     const labelledBy = clean(element.getAttribute("aria-labelledby"));
     if (labelledBy) {
       const joined = labelledBy
         .split(" ")
-        .map((id) => clean(document.getElementById(id)?.textContent))
+        .map((id) => {
+          const reference = document.getElementById(id);
+          return reference ? alternativeOf(reference, visited) : "";
+        })
         .filter(Boolean)
         .join(" ");
       if (joined) return joined;
@@ -145,7 +154,7 @@ function installObserver(): void {
     if (ariaLabel) return ariaLabel;
     if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element instanceof HTMLSelectElement) {
       const labelText = Array.from(element.labels ?? [])
-        .map((label) => clean(label.textContent))
+        .map((label) => contentAlternativeOf(label, visited))
         .filter(Boolean)
         .join(" ");
       if (labelText) return labelText;
@@ -153,10 +162,28 @@ function installObserver(): void {
     if (element instanceof HTMLInputElement) {
       const type = element.type.toLowerCase();
       if (["button", "submit", "reset"].includes(type)) return clean(element.value);
+      if (type === "image") return clean(element.alt);
     }
     if (element instanceof HTMLImageElement) return clean(element.alt);
+    const contents = contentAlternativeOf(element, visited);
+    if (contents) return contents;
     const title = clean(element.getAttribute("title"));
     if (title) return title;
+    return "";
+  };
+
+  const contentAlternativeOf = (element: Element, visited: Set<Element>): string =>
+    Array.from(element.childNodes)
+      .map((node) => {
+        if (node.nodeType === Node.TEXT_NODE) return clean(node.textContent);
+        return node instanceof Element ? alternativeOf(node, visited) : "";
+      })
+      .filter(Boolean)
+      .join(" ");
+
+  const nameOf = (element: Element): string => {
+    const name = alternativeOf(element);
+    if (name) return name;
     if (element.matches("button, a, summary, h1, h2, h3, h4, h5, h6, [role='button'], [role='link'], [role='tab'], [role='option'], [role='heading']")) {
       return clean(element.textContent);
     }

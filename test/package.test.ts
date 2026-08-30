@@ -9,8 +9,15 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 const execFileAsync = promisify(execFile);
 const repository = resolve(process.cwd());
 let submitValue = "Create account";
+let imageAlt = "Create account";
+let fixtureMode: "input" | "image" = "input";
 const fixture = () => `<!doctype html><html lang="en"><head><title>Signup fixture</title></head><body>
 <main><h1>Create an account</h1><form><label for="email">Email address</label><input id="email" type="email" required><input type="submit" value="${submitValue}"></form><p role="status"></p></main>
+<script>document.querySelector('form').addEventListener('submit',event=>{event.preventDefault();document.querySelector('[role=status]').textContent='Account created for '+document.querySelector('input').value})</script>
+</body></html>`;
+
+const imageButtonFixture = () => `<!doctype html><html lang="en"><head><title>Image button fixture</title></head><body>
+<main><h1>Create an account</h1><form><label for="email">Email address</label><input id="email" type="email" required><button id="submit" type="submit"><img alt="${imageAlt}" src="/create-account.svg"></button></form><p role="status"></p></main>
 <script>document.querySelector('form').addEventListener('submit',event=>{event.preventDefault();document.querySelector('[role=status]').textContent='Account created for '+document.querySelector('input').value})</script>
 </body></html>`;
 
@@ -18,14 +25,68 @@ let server: ReturnType<typeof createServer>;
 let origin: string;
 
 beforeAll(async () => {
-  server = createServer((_request, response) => {
+  server = createServer((request, response) => {
+    if (request.url === "/create-account.svg") {
+      response.writeHead(200, { "content-type": "image/svg+xml" });
+      response.end('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>');
+      return;
+    }
     response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-    response.end(fixture());
+    response.end(fixtureMode === "image" ? imageButtonFixture() : fixture());
   });
   await new Promise<void>((done) => server.listen(0, "127.0.0.1", done));
   const address = server.address();
   if (!address || typeof address === "string") throw new Error("Fixture server did not bind.");
   origin = `http://127.0.0.1:${address.port}`;
+});
+
+describe("published package consumer with an image-named native button", () => {
+  it("fails the packed CLI check when the descendant image alt changes", async () => {
+    const consumer = await mkdtemp(join(tmpdir(), "announce-test-image-consumer-"));
+    let tarball: string | undefined;
+    fixtureMode = "image";
+    try {
+      await execFileAsync("npm", ["run", "build"], { cwd: repository });
+      const { stdout } = await execFileAsync("npm", ["pack", "--json", "--ignore-scripts"], { cwd: repository });
+      const packed = JSON.parse(stdout) as Array<{ filename: string }>;
+      tarball = join(repository, packed[0]!.filename);
+
+      await execFileAsync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund", "--no-package-lock", tarball], { cwd: consumer });
+      const configPath = join(consumer, "announce-check.config.mjs");
+      await writeFile(configPath, `export default {
+        name: "Packaged image button",
+        url: "${origin}",
+        expectedPath: "./announce-check.expected.json",
+        steps: [
+          { action: "click", target: { selector: "#submit" } },
+          { action: "wait", for: 60 }
+        ]
+      };`);
+
+      const bin = join(consumer, "node_modules", ".bin", "announce-check");
+      const runBin = (args: string[]) => execFileAsync(process.execPath, [bin, ...args], { cwd: consumer });
+
+      const updated = await runBin(["announce-check.config.mjs", "--update", "--json", "--no-report"]);
+      expect(JSON.parse(updated.stdout)).toMatchObject({ updated: true, matches: true });
+
+      imageAlt = "Register now";
+      const changed = await runBin(["announce-check.config.mjs", "--json", "--no-report"]).catch((error: unknown) => error as { code: number; stdout: string });
+      expect(changed).toMatchObject({ code: 1 });
+      expect(JSON.parse(changed.stdout)).toMatchObject({
+        matches: false,
+        diff: {
+          firstDifference: 0,
+          expected: { kind: "focus", text: "Create account — button" },
+          received: { kind: "focus", text: "Register now — button" }
+        }
+      });
+    } finally {
+      imageAlt = "Create account";
+      fixtureMode = "input";
+      await rm(consumer, { recursive: true, force: true });
+      if (tarball) await rm(tarball, { force: true });
+    }
+  }, 90_000);
 });
 
 afterAll(async () => {

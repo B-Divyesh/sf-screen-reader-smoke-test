@@ -2,6 +2,14 @@
 
 All notable changes follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- Preserve a native button's accessible name when it comes from a descendant
+  image's alternative text, so an `alt` regression fails its checked-in
+  announcement contract.
+- Use a darker coral text token for `First difference` markers in local reports
+  so mismatch reports meet the 4.5:1 text-contrast requirement.
+
 ## 0.1.0 — 2026-08-27
 
 - Add the typed announcement-flow configuration and programmatic runner.
