@@ -2,11 +2,11 @@
 
 ## Entry point
 
-- Production: <https://screen-reader-smoke-test.sociobot.in/demo/>
+- Production: <https://screen-reader-smoke-test.sociobot.in/?demo=1> (redirects to the canonical <https://screen-reader-smoke-test.sociobot.in/demo/?demo=1>)
 - Local: run `npm run dev:site`, then open `/demo/` on the printed origin.
 
-The home page links to the demo with the visible action “Try it with sample
-data.” The direct `/demo/` URL opens the same populated state.
+The home page links to `?demo=1` with the visible action “Try it with sample
+data.” The query URL and direct `/demo/` URL open the same populated state.
 
 ## Sample data
 
@@ -20,7 +20,7 @@ logic and marks the first changed event.
 The banner reads “Demo — sample data, nothing is saved.” The demo does not read
 or write cookies, localStorage, sessionStorage, IndexedDB, or a backend. Its
 sample state exists only in the page's form controls. “Reset demo” restores the
-bundled sample and “Start for real” opens the package install section.
+bundled sample and “Open install instructions” opens the package install section.
 
 The service worker caches the public demo shell for offline use. That cache
 contains only shipped assets and is not a real-data namespace.

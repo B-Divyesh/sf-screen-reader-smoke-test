@@ -17,17 +17,17 @@ No sentence or UI label uses a banned marketing word.
 | 4 | No accounts or telemetry. |
 | 7 | Focus steps lead to one visible announcement. |
 | 4 | Review each expected event. |
-| 8 | The JSON transcript records focus and live-region events. |
-| 9 | Your team reviews it and CI compares later runs. |
+| 11 | The saved event list records keyboard focus and screen-reader status messages. |
+| 9 | Your team approves it before automated checks compare later runs. |
 | 9 | The factory has not published the npm registry entry yet. |
 | 5 | Find the first changed event. |
 | 5 | Try each report state here. |
 | 11 | The CLI writes the same comparison beside your local test run. |
 | 7 | Use it with a real screen reader. |
 | 4 | Keep the human check. |
-| 19 | Use Announce Check to protect the contract on every commit, then verify the release candidate with a real screen reader. |
+| 16 | Run Announce Check before release, then verify the release candidate with a real screen reader. |
 | 4 | Install the tested package. |
-| 9 | Announce Check is an open local tool by Param Factory. |
+| 13 | Announce Check compares one checked-in browser flow. Version 0.1.0 · Built by Param Factory. |
 
 ## Headings, facts, controls, and list items
 
@@ -36,14 +36,16 @@ No sentence or UI label uses a banned marketing word.
 | 3 | Local accessibility check |
 | 5 | Try it with sample data |
 | 5 | Play the approved browser flow |
-| 6 | Record focus + ARIA live changes |
-| 5 | Stop at the first divergence |
-| 3 | Checked-in browser contract |
+| 6 | Record focus and status messages |
+| 5 | Stop at the first difference |
+| 4 | Approved browser event list |
 | 7 | Install version 0.1.0 from this site |
-| 1 | Copy |
+| 3 | Copy install command |
 | 3 | Local HTML report |
-| 2 | No events |
-| 2 | Browser error |
+| 3 | Show matching report |
+| 3 | Show first difference |
+| 3 | Show empty capture |
+| 3 | Show browser error |
 | 3 | Scope and limits |
 | 3 | What it catches |
 | 7 | A label disappears from the focused field |

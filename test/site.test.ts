@@ -48,6 +48,8 @@ describe("documentation site", () => {
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
         const footerLinks = await page.locator(".site-footer nav a").all();
         expect(footerLinks).toHaveLength(3);
+        expect(await page.locator(".site-footer").textContent()).toContain("Version 0.1.0 · Built by Param Factory");
+        expect(await page.getByRole("link", { name: "Source (GitHub, opens external site)" }).count()).toBe(1);
         for (const link of footerLinks) {
           const box = await link.boundingBox();
           expect(box?.width).toBeGreaterThanOrEqual(44);
@@ -61,13 +63,13 @@ describe("documentation site", () => {
             : [];
         }));
         expect(undersizedTargets).toEqual([]);
-        await page.keyboard.press("Tab");
+        await page.locator(".skip-link").focus();
         expect(await page.evaluate(() => document.activeElement?.classList.contains("skip-link"))).toBe(true);
         await page.keyboard.press("Enter");
         expect(await page.evaluate(() => location.hash)).toBe("#main");
         if (path === "/") {
-          await page.getByRole("button", { name: "× Divergence" }).click();
-          expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
+          await page.getByRole("button", { name: "Show first difference" }).click();
+          expect(await page.locator(".status-title").textContent()).toBe("First difference found");
         }
         const results = await new AxeBuilder({ page }).analyze();
         expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? ""))).toEqual([]);
@@ -84,7 +86,7 @@ describe("documentation site", () => {
       await page.goto(`${origin}/demo/`, { waitUntil: "domcontentloaded" });
       expect(await page.locator("h1").textContent()).toBe("Compare an announcement transcript.");
       expect(await page.locator(".demo-banner").textContent()).toContain("Demo — sample data, nothing is saved");
-      expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
+      expect(await page.locator(".status-title").textContent()).toBe("First difference found");
       expect(await page.locator(".report-action").textContent()).toBe("First difference at event 3.");
 
       await page.locator("#received-input").fill([
@@ -93,9 +95,9 @@ describe("documentation site", () => {
         "live (polite): Account created"
       ].join("\n"));
       await page.getByRole("button", { name: "Compare transcripts" }).press("Enter");
-      expect(await page.locator(".status-title").textContent()).toBe("Contract matched");
+      expect(await page.locator(".status-title").textContent()).toBe("No differences found");
       await page.getByRole("button", { name: "Reset demo" }).press("Space");
-      expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
+      expect(await page.locator(".status-title").textContent()).toBe("First difference found");
       await page.locator("#received-input").fill("changed without an event prefix");
       await page.getByRole("button", { name: "Compare transcripts" }).click();
       expect(await page.locator(".status-title").textContent()).toBe("Transcript format needs attention");
@@ -108,6 +110,35 @@ describe("documentation site", () => {
       await context.close();
     }
   }, 30_000);
+
+  it("moves focus to each route heading and announces the destination", async () => {
+    const context = await browser.newContext({ serviceWorkers: "block" });
+    const page = await context.newPage();
+    await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
+    expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
+    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed focus and live announcements.");
+
+    await page.getByRole("link", { name: "Try it with sample data" }).click();
+    await page.waitForURL(/\/demo\/\?demo=1$/);
+    expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
+    expect(await page.locator("#route-announcement").textContent()).toBe("Compare an announcement transcript.");
+
+    await page.goBack({ waitUntil: "domcontentloaded" });
+    await page.locator("h1").waitFor();
+    expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
+    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed focus and live announcements.");
+    await context.close();
+  });
+
+  it("redirects the one-click ?demo=1 entry point into the isolated sample", async () => {
+    const context = await browser.newContext({ serviceWorkers: "block" });
+    const page = await context.newPage();
+    await page.goto(`${origin}/?demo=1`, { waitUntil: "domcontentloaded" });
+    await page.waitForURL(/\/demo\/\?demo=1$/);
+    expect(await page.locator(".demo-banner").textContent()).toContain("Demo — sample data, nothing is saved");
+    expect(await page.getByRole("button", { name: "Reset demo" }).count()).toBe(1);
+    await context.close();
+  });
 
   it("@claim:site-no-tracking keeps the complete demo flow same-origin and out of personal browser storage", async () => {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
@@ -210,7 +241,7 @@ describe("documentation site", () => {
       await cdp.send("Network.clearBrowserCache");
       await context.setOffline(true);
       await page.reload({ waitUntil: "domcontentloaded", timeout: 10_000 });
-      expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
+      expect(await page.locator(".status-title").textContent()).toBe("First difference found");
       expect(await page.locator("#offline-banner").isHidden()).toBe(false);
       await page.locator("#received-input").fill([
         "focus: Email address — textbox — required",
@@ -218,7 +249,7 @@ describe("documentation site", () => {
         "live (polite): Account created"
       ].join("\n"));
       await page.getByRole("button", { name: "Compare transcripts" }).click();
-      expect(await page.locator(".status-title").textContent()).toBe("Contract matched");
+      expect(await page.locator(".status-title").textContent()).toBe("No differences found");
       await context.setOffline(false);
 
       // Reproduce the verifier's stale-document sentinel, then deliver a new

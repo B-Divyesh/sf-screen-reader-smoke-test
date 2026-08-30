@@ -11,20 +11,25 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://screen-reader-smoke-test.sociobot.in/demo/">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Demo — Announce Check">
+    <meta name="twitter:description" content="Edit two sample accessibility transcripts and see the first changed event.">
+    <meta name="twitter:image" content="https://screen-reader-smoke-test.sociobot.in/og-image.webp">
     <title>Demo — Announce Check</title>
     <link rel="canonical" href="https://screen-reader-smoke-test.sociobot.in/demo/">
     <link rel="icon" href="/mark.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/route.ts"></script>
     <script type="module" src="/demo.ts"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
+    <p class="route-announcement" id="route-announcement" role="status" aria-atomic="true"></p>
     <div class="demo-banner" role="status">
       <strong>Demo — sample data, nothing is saved</strong>
       <span class="demo-banner-actions">
         <button type="button" id="reset-demo">Reset demo</button>
-        <a href="/#install">Start for real</a>
+        <a href="/#install">Open install instructions</a>
       </span>
     </div>
     <div class="offline-banner" id="offline-banner" role="status" hidden>
@@ -41,7 +46,7 @@
     <main id="main" class="playground-main shell">
       <div class="playground-intro">
         <p class="kicker">Signup confirmation / sample flow</p>
-        <h1>Compare an announcement transcript.</h1>
+        <h1 tabindex="-1">Compare an announcement transcript.</h1>
         <p class="lede">Edit the received events, then compare them with the approved focus and live-region sequence.</p>
       </div>
 
@@ -60,7 +65,7 @@ live (polite): Check your inbox</textarea></label>
 
       <section class="playground-result" aria-labelledby="result-title" aria-live="polite" aria-atomic="true">
         <div class="report-topline">
-          <p><span class="status-symbol">×</span> <strong class="status-title" id="result-title">Contract diverged</strong></p>
+          <p><span class="status-symbol">×</span> <strong class="status-title" id="result-title">First difference found</strong></p>
           <span class="event-count">3 / 3 events</span>
         </div>
         <div class="transcripts">
@@ -73,8 +78,8 @@ live (polite): Check your inbox</textarea></label>
     </main>
 
     <footer class="site-footer shell">
-      <p><strong>Announce Check</strong> compares one checked-in browser flow.</p>
-      <nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-screen-reader-smoke-test">Source</a></nav>
+      <p><strong>Announce Check</strong> compares one checked-in browser flow. Version 0.1.0 · Built by Param Factory.</p>
+      <nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-screen-reader-smoke-test">Source (GitHub, opens external site)</a></nav>
     </footer>
   </body>
 </html>

@@ -57,7 +57,7 @@ npx announce-check --update
 git add announce-check.expected.json
 ```
 
-Then verify it in CI:
+Then run it in automated checks:
 
 ```sh
 npx announce-check

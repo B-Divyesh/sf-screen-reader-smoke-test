@@ -58,7 +58,7 @@ function compare() {
     const result = compareTranscripts(expected, received);
     fillList(expectedList, expected, result.firstDifference);
     fillList(receivedList, received, result.firstDifference);
-    statusTitle.textContent = result.matches ? "Contract matched" : "Contract diverged";
+    statusTitle.textContent = result.matches ? "No differences found" : "First difference found";
     statusSymbol.textContent = result.matches ? "✓" : "×";
     statusSymbol.classList.toggle("is-match", result.matches);
     eventCount.textContent = `${received.length} / ${expected.length} events`;

@@ -42,6 +42,13 @@
     "sandbox": "fresh packed-package consumer; record, match, change the accessible name, and pass an unknown option"
   },
   {
+    "id": "ci-recheck",
+    "claim": "Automated checks can compare a saved transcript without prompts.",
+    "where": "landing event-list section, README usage",
+    "test": "npm test -- --testNamePattern @claim:ci-recheck",
+    "sandbox": "fresh packed-package consumer; create a saved transcript, run the CLI with no interactive input, and assert exit 0"
+  },
+  {
     "id": "origin-boundary",
     "claim": "Remote target URLs require explicit authorization; loopback targets work by default.",
     "where": "privacy policy, README",

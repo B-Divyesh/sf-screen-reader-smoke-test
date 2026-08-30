@@ -4,6 +4,12 @@ const expected = [
   "live (polite): Account created"
 ];
 
+// The catalog and the first-screen action use this short, shareable demo URL.
+// The canonical demo document keeps its own isolated, in-memory sample state.
+if (new URLSearchParams(window.location.search).get("demo") === "1") {
+  window.location.replace("/demo/?demo=1");
+}
+
 const receivedByMode: Record<string, string[]> = {
   match: expected,
   diverge: [
@@ -36,7 +42,7 @@ function showDemo(mode: string) {
   const isMatch = mode === "match";
   expectedList.innerHTML = listMarkup(isError ? [] : expected, difference, isError ? "Expected transcript unavailable" : "No expected events");
   receivedList.innerHTML = listMarkup(received, difference, isError ? "Chromium could not start" : "No accessibility events captured");
-  statusTitle.textContent = isMatch ? "Contract matched" : isError ? "Check could not run" : isEmpty ? "No events captured" : "Contract diverged";
+  statusTitle.textContent = isMatch ? "No differences found" : isError ? "Check could not run" : isEmpty ? "No events captured" : "First difference found";
   statusSymbol.textContent = isMatch ? "✓" : isEmpty ? "○" : "×";
   statusSymbol.classList.toggle("is-match", isMatch);
   eventCount.textContent = isError ? "Run error" : `${received.length} / ${expected.length} events`;
@@ -45,7 +51,7 @@ function showDemo(mode: string) {
     ? "Install Chromium with: npx playwright install chromium"
     : isEmpty
       ? "Move focus or update a role=status / aria-live region in the scripted flow."
-      : "First difference at event 3: review the status text or update the approved contract.";
+    : "First difference at event 3: review the status message or update the approved event list.";
   buttons.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.demo === mode)));
 }
 

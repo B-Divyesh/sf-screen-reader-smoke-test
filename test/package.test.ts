@@ -104,7 +104,7 @@ afterAll(async () => {
 });
 
 describe("published package consumer", () => {
-  it("@claim:download-package @claim:cli-exit-codes @claim:package-formats installs the site tarball and runs every package entry", async () => {
+  it("@claim:download-package @claim:cli-exit-codes @claim:ci-recheck @claim:package-formats installs the site tarball and runs every package entry without prompts", async () => {
     const consumer = await mkdtemp(join(tmpdir(), "announce-test-consumer-"));
     try {
       await execFileAsync("npm", ["run", "build"], { cwd: repository });
