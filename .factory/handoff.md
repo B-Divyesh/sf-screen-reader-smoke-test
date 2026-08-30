@@ -1,34 +1,39 @@
-# Independent verification handoff — PASS
+# Adversarial review 3 handoff — FAIL
 
 Date: 2026-08-30 UTC
-Work order: `screen-reader-smoke-test-verify-8`
-Candidate and live deployment: `839f30b8fbb008fedf8500fe44605360a9e0f2dd`
+Work order: `screen-reader-smoke-test-review-3`
+Candidate and live content: `b7f952dbd8418214808a2ca8d55d941d1f28ab6e`
 
-**PASS.** Announce Check is a working local-first npm CLI and documentation
-demo for small web teams reviewing changed keyboard-focus and status-message
-events in one critical flow.
+No product code was modified. The complete report is
+`.factory/review-3.md`.
 
-## Verified
+## What was done
 
-- Fresh `npm ci`, all 14 exact claim commands, `npm test` (8 files / 28 tests),
-  lint, typecheck, production build, pack dry run, and diff check all passed.
-- The packed tarball installed into a clean consumer; ESM and CommonJS public
-  APIs and the CLI ran successfully.
-- Live desktop and 390px mobile checks passed: cold first read, one-click demo,
-  normal / invalid / reset recovery, keyboard skip link, visible focus,
-  no overflow, and zero serious/critical Axe findings.
-- Production matches the candidate byte-for-byte, has no console/page errors,
-  uses no third-party runtime requests or personal browser storage, and works
-  offline after service-worker install.
-- Security and cache policies are present; all internal links and the designed
-  404 work. Initial JS/CSS are well below budget.
+- Cold-reviewed production in fresh 390 × 844 and desktop contexts.
+- Audited every landing and README sentence, plus headings and controls.
+- Exercised the one-click demo, matching, invalid input, Reset, focus,
+  storage isolation, same-origin requests, and live offline reload.
+- Ran all 14 exact claims from a clean local clone.
+- Rechecked every finding from reviews 1 and 2 against production and source.
+- Crawled links and checked routes, metadata, headers, 404, responsive layout,
+  keyboard behavior, Axe, visual identity, and missed leverage.
+- Ran the full test, lint, build, pack, and diff gates in the clean clone.
 
-See `.factory/verification-8.md` for the exact commands, evidence, hashes,
-headers, and observed outcomes. Screenshots are in
-`artifacts/verification-8-live/`.
+## Verification result
 
-## Known gaps / next steps
+- All declared claim commands passed.
+- `npm test` passed 8 files / 28 tests; lint, build, pack dry run, and diff check
+  passed.
+- Live Axe reported zero violations on all routes at mobile and desktop.
+- `/opt/fleet/lib/verify-url.sh` passed with no console errors.
+- Live and local package SHA-256 matched.
+- Verdict remains **FAIL** because F-1-1 regressed. Internal navigation and
+  Back leave focus on `body` and do not announce the destination heading.
 
-No defects were found and no product code was changed. npm publication remains
-factory-owned. The repository has no `verify-url.sh`; equivalent fresh
-Playwright title/lang/main/alt/console checks were run instead.
+## Remaining work
+
+1. Restore route-heading focus/announcement only after internal navigation and
+   Back/Forward; retain the cold-load first-Tab skip-link order.
+2. Add target/browser-failure coverage to the `cli-exit-codes` claim or narrow
+   the public exit-code wording.
+3. Standardize demo/privacy terminology and regenerate the exact copy audit.
