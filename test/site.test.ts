@@ -134,6 +134,12 @@ describe("documentation site", () => {
       expect(await page.locator("#expected-input").inputValue()).toContain("live (polite): Account created");
       expect(await page.locator("#received-input").inputValue()).toContain("live (polite): Check your inbox");
       expect(await page.locator("#expected-input").evaluate((input) => document.activeElement === input)).toBe(true);
+      const resetInputBox = await page.locator("#expected-input").boundingBox();
+      const demoBannerBox = await page.locator(".demo-banner").boundingBox();
+      expect(resetInputBox).not.toBeNull();
+      expect(demoBannerBox).not.toBeNull();
+      expect(resetInputBox!.y).toBeGreaterThanOrEqual(demoBannerBox!.y + demoBannerBox!.height);
+      expect(resetInputBox!.y + resetInputBox!.height).toBeLessThanOrEqual(viewport.height);
       await page.locator("#received-input").fill("changed without an event prefix");
       await page.getByRole("button", { name: "Compare event lists" }).click();
       expect(await page.locator(".status-title").textContent()).toBe("Event list format needs attention");

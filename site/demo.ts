@@ -69,7 +69,8 @@ resetButton.addEventListener("click", () => {
   expectedInput.value = sampleExpected;
   receivedInput.value = sampleReceived;
   compare();
-  expectedInput.focus();
+  expectedInput.scrollIntoView({ block: "center" });
+  expectedInput.focus({ preventScroll: true });
 });
 compare();
 
