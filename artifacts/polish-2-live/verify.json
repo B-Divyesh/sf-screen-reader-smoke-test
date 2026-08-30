@@ -1,0 +1,14 @@
+{
+  "url": "https://screen-reader-smoke-test.sociobot.in/",
+  "loadMs": 895,
+  "errors": [],
+  "a11y": {
+    "title": "Announce Check — Check browser announcements",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imgsMissingAlt": 0,
+    "buttonsUnlabeled": 0,
+    "textLength": 2612
+  }
+}

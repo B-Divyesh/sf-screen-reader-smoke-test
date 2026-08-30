@@ -1,0 +1,346 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "width": 1440,
+      "height": 900,
+      "status": 200,
+      "url": "https://screen-reader-smoke-test.sociobot.in/",
+      "title": "Announce Check — Check browser announcements",
+      "h1": "Catch changed keyboard focus and status messages.",
+      "header": [
+        {
+          "name": "Demo",
+          "href": "/demo/"
+        },
+        {
+          "name": "How it works",
+          "href": "/#contract"
+        },
+        {
+          "name": "Limits",
+          "href": "/#limits"
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy/"
+        }
+      ],
+      "serious": [],
+      "errors": []
+    },
+    {
+      "path": "/",
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "url": "https://screen-reader-smoke-test.sociobot.in/",
+      "title": "Announce Check — Check browser announcements",
+      "h1": "Catch changed keyboard focus and status messages.",
+      "header": [
+        {
+          "name": "Demo",
+          "href": "/demo/"
+        },
+        {
+          "name": "How it works",
+          "href": "/#contract"
+        },
+        {
+          "name": "Limits",
+          "href": "/#limits"
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy/"
+        }
+      ],
+      "serious": [],
+      "errors": []
+    },
+    {
+      "path": "/demo/?demo=1",
+      "width": 1440,
+      "height": 900,
+      "status": 200,
+      "url": "https://screen-reader-smoke-test.sociobot.in/demo/?demo=1",
+      "title": "Demo — Announce Check",
+      "h1": "Compare two sample event lists.",
+      "header": [
+        {
+          "name": "Demo",
+          "href": "/demo/"
+        },
+        {
+          "name": "How it works",
+          "href": "/#contract"
+        },
+        {
+          "name": "Limits",
+          "href": "/#limits"
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy/"
+        }
+      ],
+      "serious": [],
+      "errors": []
+    },
+    {
+      "path": "/demo/?demo=1",
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "url": "https://screen-reader-smoke-test.sociobot.in/demo/?demo=1",
+      "title": "Demo — Announce Check",
+      "h1": "Compare two sample event lists.",
+      "header": [
+        {
+          "name": "Demo",
+          "href": "/demo/"
+        },
+        {
+          "name": "How it works",
+          "href": "/#contract"
+        },
+        {
+          "name": "Limits",
+          "href": "/#limits"
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy/"
+        }
+      ],
+      "serious": [],
+      "errors": []
+    },
+    {
+      "path": "/privacy/",
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "url": "https://screen-reader-smoke-test.sociobot.in/privacy/",
+      "title": "Privacy — Announce Check",
+      "h1": "How Announce Check handles data.",
+      "header": [
+        {
+          "name": "Demo",
+          "href": "/demo/"
+        },
+        {
+          "name": "How it works",
+          "href": "/#contract"
+        },
+        {
+          "name": "Limits",
+          "href": "/#limits"
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy/"
+        }
+      ],
+      "serious": [],
+      "errors": []
+    },
+    {
+      "path": "/terms/",
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "url": "https://screen-reader-smoke-test.sociobot.in/terms/",
+      "title": "Terms — Announce Check",
+      "h1": "Terms for using Announce Check.",
+      "header": [
+        {
+          "name": "Demo",
+          "href": "/demo/"
+        },
+        {
+          "name": "How it works",
+          "href": "/#contract"
+        },
+        {
+          "name": "Limits",
+          "href": "/#limits"
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy/"
+        }
+      ],
+      "serious": [],
+      "errors": []
+    },
+    {
+      "path": "/missing-polish-2",
+      "width": 390,
+      "height": 844,
+      "status": 404,
+      "url": "https://screen-reader-smoke-test.sociobot.in/missing-polish-2",
+      "title": "Page not found — Announce Check",
+      "h1": "This page does not exist.",
+      "header": [
+        {
+          "name": "Demo",
+          "href": "/demo/"
+        },
+        {
+          "name": "How it works",
+          "href": "/#contract"
+        },
+        {
+          "name": "Limits",
+          "href": "/#limits"
+        },
+        {
+          "name": "Privacy",
+          "href": "/privacy/"
+        }
+      ],
+      "serious": [],
+      "errors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ]
+    }
+  ],
+  "demo": {
+    "banner": "Demo — sample data, nothing is saved\n      \n        Reset demo\n        Open install instructions",
+    "status": "First difference found",
+    "action": "First difference at event 3.",
+    "expected": "Account created",
+    "received": "Check your inbox",
+    "result": {
+      "x": 14,
+      "y": 527.203125,
+      "width": 362,
+      "height": 254.765625,
+      "top": 527.203125,
+      "right": 376,
+      "bottom": 781.96875,
+      "left": 14
+    },
+    "expectedBox": {
+      "x": 28,
+      "y": 669.1875,
+      "width": 334,
+      "height": 24.796875,
+      "top": 669.1875,
+      "right": 362,
+      "bottom": 693.984375,
+      "left": 28
+    },
+    "receivedBox": {
+      "x": 28,
+      "y": 743.171875,
+      "width": 334,
+      "height": 24.796875,
+      "top": 743.171875,
+      "right": 362,
+      "bottom": 767.96875,
+      "left": 28
+    },
+    "storage": {
+      "local": 0,
+      "session": 0,
+      "cookies": "",
+      "indexed": 0
+    }
+  },
+  "home": {
+    "390": {
+      "facts": [
+        "Filled values are redacted.",
+        "Works offline after your first visit.",
+        "Free under the MIT License."
+      ],
+      "action": {
+        "x": 14,
+        "y": 477.59375,
+        "width": 252.84375,
+        "height": 52,
+        "top": 477.59375,
+        "right": 266.84375,
+        "bottom": 529.59375,
+        "left": 14
+      },
+      "detail": {
+        "x": 14,
+        "y": 545.59375,
+        "width": 277.234375,
+        "height": 43.375,
+        "top": 545.59375,
+        "right": 291.234375,
+        "bottom": 588.96875,
+        "left": 14
+      },
+      "factsBox": {
+        "x": 14,
+        "y": 612.96875,
+        "width": 362,
+        "height": 81.0625,
+        "top": 612.96875,
+        "right": 376,
+        "bottom": 694.03125,
+        "left": 14
+      }
+    },
+    "1440": {
+      "facts": [
+        "Filled values are redacted.",
+        "Works offline after your first visit.",
+        "Free under the MIT License."
+      ],
+      "action": {
+        "x": 130,
+        "y": 706.25,
+        "width": 252.84375,
+        "height": 52,
+        "top": 706.25,
+        "right": 382.84375,
+        "bottom": 758.25,
+        "left": 130
+      },
+      "detail": {
+        "x": 398.84375,
+        "y": 710.5625,
+        "width": 234.203125,
+        "height": 43.375,
+        "top": 710.5625,
+        "right": 633.046875,
+        "bottom": 753.9375,
+        "left": 398.84375
+      },
+      "factsBox": {
+        "x": 130,
+        "y": 782.25,
+        "width": 503.046875,
+        "height": 81.0625,
+        "top": 782.25,
+        "right": 633.046875,
+        "bottom": 863.3125,
+        "left": 130
+      }
+    }
+  },
+  "errors": [],
+  "focus": {
+    "rootFocus": true,
+    "demoFocus": true,
+    "changed": "First difference found",
+    "reset": "First difference at event 3."
+  },
+  "offlinePrivacy": {
+    "offlineStatus": "First difference found",
+    "offlineBanner": true,
+    "sameOrigin": true,
+    "cookies": [],
+    "storage": {
+      "local": 0,
+      "session": 0,
+      "indexed": 0
+    }
+  }
+}
