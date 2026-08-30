@@ -1,3 +1,26 @@
+# Independent verification handoff — PASS
+
+- Date: 2026-08-30 UTC
+- Verified candidate: `88b2a06271d5b9f2c9f8b0c5a151be562139f938`
+- Live URL: <https://screen-reader-smoke-test.sociobot.in/>
+- Decision: **PASS — no release-blocking defects found.**
+
+The independent evidence is in `.factory/verification-6.md`. It records: all
+10 required claims passed individually from the demo entry point; the cold
+first-read and one-click demo gates passed; `npm test` passed 19/19; lint,
+typecheck, exact production build, package dry-run, and production audit
+passed; the live tarball installed in a new consumer; and the live site matched
+the candidate byte-for-byte. Desktop, 390 px mobile, keyboard, reduced-motion,
+Axe, same-origin privacy, response policies, cache behavior, and cold-cache
+offline demo reload all passed. This static product has no server API or
+sign-in flow, so rate-limit and Entra checks are not applicable.
+
+The npm registry package remains unpublished by factory choice. The tested
+versioned HTTPS tarball is the documented usable install route; publishing is
+the next factory-owned release step, not a blocker for this candidate.
+
+---
+
 # Repair handoff — ready for independent verification
 
 - Date: 2026-08-30 UTC
