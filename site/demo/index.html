@@ -19,12 +19,10 @@
     <link rel="icon" href="/mark.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/styles.css">
-    <script type="module" src="/route.ts"></script>
     <script type="module" src="/demo.ts"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
-    <p class="route-announcement" id="route-announcement" role="status" aria-atomic="true"></p>
     <div class="demo-banner" role="status">
       <strong>Demo — sample data, nothing is saved</strong>
       <span class="demo-banner-actions">
@@ -43,10 +41,10 @@
       <nav aria-label="Primary"><a aria-current="page" href="/demo/">Demo</a><a href="/#contract">How it works</a><a href="/#limits">Limits</a><a href="/privacy/">Privacy</a></nav>
     </header>
 
-    <main id="main" class="playground-main shell">
+    <main id="main" class="playground-main shell" tabindex="-1">
       <div class="playground-intro">
         <p class="kicker">Signup confirmation / sample flow</p>
-        <h1 tabindex="-1">Compare two sample event lists.</h1>
+        <h1>Compare two sample event lists.</h1>
         <p class="lede">Edit the received events, then compare them with the approved keyboard-focus and status-message events.</p>
       </div>
 

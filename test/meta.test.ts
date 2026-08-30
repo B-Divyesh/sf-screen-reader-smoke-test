@@ -74,6 +74,6 @@ describe("release metadata", () => {
     };
     expect(deployment.routes).toContainEqual({ route: "/demo", rewrite: "/demo/index.html" });
     expect(deployment.responseOverrides["404"]).toEqual({ rewrite: "/404.html", statusCode: 404 });
-    expect(await readFile("site/404.html", "utf8")).toContain('<h1 tabindex="-1">This page does not exist.</h1>');
+    expect(await readFile("site/404.html", "utf8")).toContain("<h1>This page does not exist.</h1>");
   });
 });

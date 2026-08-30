@@ -48,8 +48,6 @@ describe("documentation site", () => {
         expect(await page.locator('meta[property="og:url"]').getAttribute("content")).toBe(route.canonical);
         expect(await page.locator('meta[name="twitter:title"]').getAttribute("content")).toBe(route.title);
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
-        expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
-        expect(await page.locator("#route-announcement").textContent()).toBe((await page.locator("h1").textContent())?.trim());
         const headerLinks = await page.locator(".site-header nav a").evaluateAll((links) => links.map((link) => ({
           name: link.textContent?.trim(), href: (link as HTMLAnchorElement).getAttribute("href")
         })));
@@ -83,10 +81,11 @@ describe("documentation site", () => {
             : [];
         }));
         expect(undersizedTargets).toEqual([]);
-        await page.locator(".skip-link").focus();
+        await page.keyboard.press("Tab");
         expect(await page.evaluate(() => document.activeElement?.classList.contains("skip-link"))).toBe(true);
         await page.keyboard.press("Enter");
         expect(await page.evaluate(() => location.hash)).toBe("#main");
+        expect(await page.locator("main").evaluate((main) => document.activeElement === main)).toBe(true);
         if (route.path === "/") {
           await page.getByRole("button", { name: "Show first difference" }).click();
           expect(await page.locator(".status-title").textContent()).toBe("First difference found");
@@ -174,22 +173,47 @@ describe("documentation site", () => {
     }
   });
 
-  it("moves focus to each route heading and announces the destination", async () => {
-    const context = await browser.newContext({ serviceWorkers: "block" });
+  it("keeps the skip link and header at the start of a fresh keyboard path on desktop and 390px", async () => {
+    for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+      const context = await browser.newContext({ viewport, serviceWorkers: "block" });
+      const page = await context.newPage();
+      await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
+
+      expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
+      await page.keyboard.press("Tab");
+      expect(await page.locator(".skip-link").evaluate((link) => document.activeElement === link)).toBe(true);
+      const skipBox = await page.locator(".skip-link").boundingBox();
+      expect(skipBox?.y).toBeGreaterThanOrEqual(0);
+      expect(skipBox!.y + skipBox!.height).toBeLessThanOrEqual(viewport.height);
+
+      await page.keyboard.press("Tab");
+      expect(await page.getByRole("link", { name: "Announce Check home" }).evaluate((link) => document.activeElement === link)).toBe(true);
+      await page.keyboard.press("Tab");
+      expect(await page.getByRole("link", { name: "Demo" }).evaluate((link) => document.activeElement === link)).toBe(true);
+      await context.close();
+    }
+  });
+
+  it("keeps Reset demo's focused input visible immediately at 390px with normal motion", async () => {
+    const viewport = { width: 390, height: 844 };
+    const context = await browser.newContext({ viewport, serviceWorkers: "block" });
     const page = await context.newPage();
-    await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
-    expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
-    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed keyboard focus and status messages.");
+    await page.goto(`${origin}/demo/`, { waitUntil: "domcontentloaded" });
+    expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(false);
 
-    await page.getByRole("link", { name: "Try it with sample data" }).click();
-    await page.waitForURL(/\/demo\/\?demo=1$/);
-    expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
-    expect(await page.locator("#route-announcement").textContent()).toBe("Compare two sample event lists.");
+    await page.locator("#received-input").fill("not an event");
+    await page.getByRole("button", { name: "Compare event lists" }).click();
+    expect(await page.locator(".status-title").textContent()).toBe("Event list format needs attention");
+    await page.getByRole("button", { name: "Reset demo" }).focus();
+    await page.keyboard.press("Space");
 
-    await page.goBack({ waitUntil: "domcontentloaded" });
-    await page.locator("h1").waitFor();
-    expect(await page.locator("h1").evaluate((heading) => document.activeElement === heading)).toBe(true);
-    expect(await page.locator("#route-announcement").textContent()).toBe("Catch changed keyboard focus and status messages.");
+    expect(await page.locator("#expected-input").evaluate((input) => document.activeElement === input)).toBe(true);
+    const resetInputBox = await page.locator("#expected-input").boundingBox();
+    const demoBannerBox = await page.locator(".demo-banner").boundingBox();
+    expect(resetInputBox).not.toBeNull();
+    expect(demoBannerBox).not.toBeNull();
+    expect(resetInputBox!.y).toBeGreaterThanOrEqual(demoBannerBox!.y + demoBannerBox!.height);
+    expect(resetInputBox!.y + resetInputBox!.height).toBeLessThanOrEqual(viewport.height);
     await context.close();
   });
 

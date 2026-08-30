@@ -69,7 +69,17 @@ resetButton.addEventListener("click", () => {
   expectedInput.value = sampleExpected;
   receivedInput.value = sampleReceived;
   compare();
-  expectedInput.scrollIntoView({ block: "center" });
+
+  // The demo banner is sticky. CSS smooth scrolling leaves the newly focused
+  // textarea hidden behind it until the animation finishes, so position it in
+  // the visible part of the viewport before moving focus.
+  const banner = document.querySelector<HTMLElement>(".demo-banner");
+  const bannerBottom = banner?.getBoundingClientRect().bottom ?? 0;
+  const input = expectedInput.getBoundingClientRect();
+  const availableHeight = window.innerHeight - bannerBottom;
+  const targetTop = bannerBottom + Math.max(16, (availableHeight - input.height) / 2);
+  const targetScrollTop = Math.max(0, window.scrollY + input.top - targetTop);
+  window.scrollTo({ top: targetScrollTop, behavior: "instant" as ScrollBehavior });
   expectedInput.focus({ preventScroll: true });
 });
 compare();

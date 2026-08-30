@@ -19,12 +19,10 @@
     <link rel="icon" href="/mark.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/styles.css">
-    <script type="module" src="/route.ts"></script>
     <script type="module" src="/main.ts"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
-    <p class="route-announcement" id="route-announcement" role="status" aria-atomic="true"></p>
     <div class="offline-banner" id="offline-banner" role="status" hidden>
       You’re offline. The guide and sample report still work; installation needs a connection.
     </div>
@@ -41,11 +39,11 @@
       </nav>
     </header>
 
-    <main id="main">
+    <main id="main" tabindex="-1">
       <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
           <p class="kicker"><span>Local accessibility check</span></p>
-          <h1 id="hero-title" tabindex="-1">Catch changed keyboard focus and status messages.</h1>
+          <h1 id="hero-title">Catch changed keyboard focus and status messages.</h1>
           <p class="lede">For small web teams checking one critical form flow before release.</p>
           <div class="hero-action-row">
             <a class="primary-link hero-primary" href="/?demo=1">Try it with sample data</a>
