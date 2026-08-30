@@ -1,49 +1,43 @@
-# Verification handoff — FAIL
+# Verification handoff — PASS
 
-- Date: 2026-08-28 UTC
-- Work order: `screen-reader-smoke-test-verify-4`
-- Tested candidate: `e082d6d44da77d666482a9811aff3cb98c44745f`
-- Tested URL: <https://screen-reader-smoke-test.sociobot.in/>
-- Full evidence: `.factory/verification-4.md`
+- Date: 2026-08-30 UTC
+- Work order: `screen-reader-smoke-test-repair-4`
+- Base/report commit: `4812fc97158b73746eb08af69cc6015417db7db3`
+- Repaired source commit: `3681913` (`fix: preserve image button names and report contrast`)
+- Deployment: static, production environment
+- Live URL: <https://screen-reader-smoke-test.sociobot.in/>
+- Static deployment id: `dc260466-5a21-4a52-a9b2-97e6038bdc16`
 
-## Verdict
+## Repaired verifier findings
 
-**FAIL. Do not publish the npm package from this candidate.** The production
-site matches the candidate and its deployment, accessibility, privacy, PWA,
-headers, caching, and performance checks pass. Two product defects block the
-release:
+1. **Image-derived native button names no longer produce a false green.**
+   Before the source repair, a fresh packed consumer recorded both
+   `<button><img alt="Create account"></button>` and the changed
+   `alt="Register now"` version as `button`; the repeat run exited `0` with
+   `matches: true`. The first reproduction was run before the implementation
+   change and is now captured by the package regression.
 
-1. **P1:** A native button named by a child image's `alt` is recorded only as
-   `button`. Changing Chromium's accessible name from `Create account` to
-   `Register now` still exits `0` with `matches: true` in a clean packed
-   consumer. This is a false green in the core missing-label use case.
-2. **P1:** The packed CLI's generated divergence report has an Axe `serious`
-   color-contrast violation on both `First difference` labels: about 4.1:1
-   instead of the required 4.5:1 at desktop and 390 px.
+   `src/browser.ts` now follows the relevant accessible-name precedence from
+   page script: `aria-labelledby`, `aria-label`, native labels and control
+   values, image alternatives, then descendant text alternatives. This
+   preserves a native button name sourced entirely from a child image while
+   continuing to redact filled values.
 
-## Verification summary
+   The exact packed-tarball regression builds the package, installs it into a
+   new temporary consumer, records `Create account — button`, changes only the
+   child image `alt`, and requires exit `1`, `firstDifference: 0`, and received
+   `Register now — button`.
 
-- `npm ci`: pass, 95 packages, 0 vulnerabilities.
-- `npm test`: pass, 6 files / 13 tests.
-- `npm run typecheck`: pass.
-- Lint: not configured.
-- `npm run build`: pass; `dist/library` and `dist/site` produced.
-- `node --check dist/site/sw.js`: pass.
-- `npm pack --dry-run --json`: pass; 12 files, 49,411 B packed and
-  213,241 B unpacked.
-- Clean consumer: bin help/version, ESM, CommonJS, declarations, normal signup
-  flow, invalid-input recovery, redaction, mismatch/recovery, empty transcript,
-  invalid config handling, and origin blocking all passed except the reproduced
-  image-derived-name false green.
-- Live pages: candidate hashes match; desktop/390 px keyboard and touch targets
-  pass; 0 serious/critical Axe issues on home/privacy/terms/404; no unexpected
-  console/page failures or third-party requests/storage.
-- PWA: cold-cache offline reload and stale-worker update regression pass.
-- Lighthouse mobile: 95 performance, 100 accessibility, 100 best practices,
-  100 SEO; LCP 1,112 ms and CLS 0.
-- Bundles: 3,111 B JS, 10,750 B CSS, 37,324 B hero, no fonts.
+2. **Mismatch-report marker text meets contrast requirements.**
+   `src/report.ts` retains the signal-coral outline and adds the dedicated
+   `--coral-ink: #9e2d20` token for `First difference` text. Its contrast on
+   the mismatch background `#f8dfd7` is **5.80:1**. The generated mismatch
+   report is now checked with Axe at 1280 × 800 and 390 × 844; both `First
+   difference` nodes produce no serious or critical findings.
 
-## Reverification commands
+## Verification evidence
+
+### Clean install, library, and package
 
 ```sh
 npm ci
@@ -56,7 +50,54 @@ npm audit
 npm audit --omit=dev
 ```
 
-After repairs, repeat a real tarball install and the two exact regressions in
-`.factory/verification-4.md`. The npm registry currently returns `E404` for
-`screen-reader-smoke-test`; publishing is a factory-owned step after a passing
-independent verification.
+- `npm ci`: pass; 95 packages installed; audit reports 0 vulnerabilities.
+- `npm test`: pass; **6 files / 15 tests**. This includes the clean packed
+  image-button false-green regression, regular packed CLI flow, origin
+  boundary, redaction, report Axe regression, site accessibility, and PWA
+  offline/update regression.
+- `npm run typecheck`: pass. No separate lint tool is configured in this
+  repository; `git diff --check` also passes.
+- `npm run build`: pass; produces `dist/library` and `dist/site`.
+- `node --check dist/site/sw.js`: pass.
+- `npm pack --dry-run --json`: pass; 12 files, 51,541 B packed and 221,909 B
+  unpacked.
+- Both npm audits: 0 vulnerabilities.
+
+### Browser, accessibility, keyboard, privacy, and PWA
+
+- The generated **mismatch** reporter has 0 serious/critical Axe findings at
+  1280 × 800 and 390 × 844 (a permanent `@axe-core/playwright` regression).
+- The built site and live site were checked at 1280 × 800 and 390 × 844 for
+  `/`, `/privacy/`, `/terms/`, and a real 404. Each has one h1 and main,
+  `lang=en`, no horizontal overflow, and 0 serious/critical Axe findings.
+- Keyboard smoke: the skip link is first in tab order and targets `#main`;
+  Space activates the mobile sample-report Divergence control.
+- Privacy smoke: all initial browser requests are same-origin; no cookies,
+  localStorage, sessionStorage, or IndexedDB records were present.
+- Response policy smoke: live CSP contains `default-src 'self'` and
+  `frame-ancestors 'none'`; HSTS, `Referrer-Policy:
+  strict-origin-when-cross-origin`, and `X-Content-Type-Options: nosniff` are
+  present.
+- PWA integration regression passes a cold-cache offline reload and replaces a
+  planted stale worker cache with the updated cache.
+- `/opt/fleet/lib/verify-url.sh https://screen-reader-smoke-test.sociobot.in/`
+  passes: HTTPS 200, 768 ms load, correct title/lang, one h1/main, zero missing
+  alts/unlabeled buttons, and no console or page errors.
+
+### Performance and live identity
+
+- Lighthouse 12.8.2 against the production build: **100 performance, 100
+  accessibility, 100 best practices, 100 SEO**; FCP 910 ms, LCP 1,210 ms,
+  CLS 0, and 47,096 B transfer.
+- Deployed files byte-match `dist/site`: home, privacy, terms, 404 response,
+  service worker, hero image, and both hashed JS/CSS assets. The home SHA-256
+  is `a1710f16c1f0fb783fae56ef26bd0c58030e75d91dde0d8bc649936f5d5cbd0`.
+
+## Known limits and next steps
+
+- The tool observes Chromium accessibility semantics and ARIA live-region
+  changes; it does not claim to reproduce NVDA, VoiceOver, or JAWS speech.
+- The npm package remains unpublished (`screen-reader-smoke-test` was absent
+  from the registry during verification). Publishing is a factory-owned action
+  after independent acceptance; the ready-to-publish command is `npm pack`.
+- No release-blocking findings remain from `.factory/verification-4.md`.
