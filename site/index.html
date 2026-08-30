@@ -3,11 +3,21 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Catch missing labels, focus moves, and live announcements before release with a checked-in browser accessibility transcript.">
+    <meta name="description" content="Check one browser flow for changed focus semantics and ARIA live-region announcements before release.">
     <meta name="theme-color" content="#f4f0e6">
-    <title>Announce Check — A reviewable screen-reader smoke test</title>
+    <meta property="og:title" content="Announce Check — Check browser announcements">
+    <meta property="og:description" content="Check one browser flow for changed focus semantics and live-region announcements.">
+    <meta property="og:image" content="https://screen-reader-smoke-test.sociobot.in/og-image.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://screen-reader-smoke-test.sociobot.in/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Announce Check — Check browser announcements">
+    <meta name="twitter:description" content="Check one browser flow for changed focus semantics and live-region announcements.">
+    <meta name="twitter:image" content="https://screen-reader-smoke-test.sociobot.in/og-image.webp">
+    <title>Announce Check — Check browser announcements</title>
     <link rel="canonical" href="https://screen-reader-smoke-test.sociobot.in/">
     <link rel="icon" href="/mark.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="/styles.css">
     <script type="module" src="/main.ts"></script>
   </head>
@@ -22,8 +32,8 @@
         <span>Announce Check</span>
       </a>
       <nav aria-label="Primary">
-        <a href="#contract">The contract</a>
-        <a href="#demo">Sample report</a>
+        <a href="/demo/">Demo</a>
+        <a href="#contract">How it works</a>
         <a href="#limits">Honest limits</a>
         <a class="nav-install" href="#install">Install <span aria-hidden="true">↓</span></a>
       </nav>
@@ -32,21 +42,22 @@
     <main id="main">
       <section class="hero shell" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="kicker"><span>Local-first</span> / release check 01</p>
-          <h1 id="hero-title">Hear the break before your users do.</h1>
-          <p class="lede">Turn one critical signup, search, or form flow into a checked-in accessibility transcript. See the first focus or live-region divergence—without an accessibility score or hosted dashboard.</p>
-          <div class="install-command" id="install">
-            <code>npm i -D screen-reader-smoke-test</code>
-            <button class="copy-button" type="button" data-copy="npm i -D screen-reader-smoke-test" aria-describedby="copy-status">
-              <span>Copy</span>
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><rect x="8" y="8" width="11" height="11"/><path d="M16 8V5H5v11h3"/></svg>
-            </button>
+          <p class="kicker"><span>Local accessibility check</span></p>
+          <h1 id="hero-title">Catch changed focus and live announcements.</h1>
+          <p class="lede">For small web teams checking one critical form flow before release.</p>
+          <div class="hero-action-row">
+            <a class="primary-link hero-primary" href="/demo/">Try it with sample data</a>
+            <p>Loads a signup transcript and shows its first change.</p>
           </div>
-          <p class="copy-status" id="copy-status" aria-live="polite">Free, open source, no telemetry.</p>
+          <ul class="hero-facts" aria-label="Product facts">
+            <li>Runs on your machine.</li>
+            <li>Redacts filled values.</li>
+            <li>No accounts or telemetry.</li>
+          </ul>
         </div>
         <figure class="hero-art">
           <img src="/announce-field.webp" width="1200" height="800" fetchpriority="high" alt="A precise cobalt path connects focus nodes, splits at a coral divergence, and expands into dark announcement arcs.">
-          <figcaption><span aria-hidden="true">↳</span> One flow. One visible contract.</figcaption>
+          <figcaption><span aria-hidden="true">↳</span> Focus steps lead to one visible announcement.</figcaption>
         </figure>
       </section>
 
@@ -60,9 +71,20 @@
 
       <section class="contract-section shell" id="contract" aria-labelledby="contract-title">
         <div class="section-intro">
-          <p class="kicker">A small contract beats a vague score</p>
-          <h2 id="contract-title">Review the words and order that matter.</h2>
-          <p>The expected transcript is plain JSON. Your reviewer can understand it, your CI can enforce it, and your fixture values never appear in it.</p>
+          <p class="kicker">Checked-in browser contract</p>
+          <h2 id="contract-title">Review each expected event.</h2>
+          <p>The JSON transcript records focus and live-region events. Your team reviews it and CI compares later runs.</p>
+          <div class="install-block" id="install">
+            <p><strong>Install version 0.1.0 from this site</strong></p>
+            <div class="install-command">
+              <code tabindex="0" aria-label="Install command">npm i -D https://screen-reader-smoke-test.sociobot.in/downloads/screen-reader-smoke-test-0.1.0.tgz playwright@1.58.2</code>
+              <button class="copy-button" type="button" data-copy="npm i -D https://screen-reader-smoke-test.sociobot.in/downloads/screen-reader-smoke-test-0.1.0.tgz playwright@1.58.2" aria-describedby="copy-status">
+                <span>Copy</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18"><rect x="8" y="8" width="11" height="11"/><path d="M16 8V5H5v11h3"/></svg>
+              </button>
+            </div>
+            <p class="copy-status" id="copy-status" aria-live="polite">The factory has not published the npm registry entry yet.</p>
+          </div>
         </div>
         <div class="code-window" aria-label="Configuration example">
           <div class="window-label"><span>announce-check.config.mjs</span><span>3 steps</span></div>
@@ -85,8 +107,8 @@
         <div class="shell">
           <div class="section-intro demo-intro">
             <p class="kicker">Local HTML report</p>
-            <h2 id="demo-title">The first difference gets the whole room.</h2>
-            <p>Try each first-class state. The real CLI writes this report beside your test run, with no upload and no account.</p>
+            <h2 id="demo-title">Find the first changed event.</h2>
+            <p>Try each report state here. The CLI writes the same comparison beside your local test run.</p>
           </div>
           <div class="demo-controls" role="group" aria-label="Sample report state">
             <button type="button" data-demo="match" aria-pressed="true">✓ Match</button>
@@ -116,8 +138,8 @@
 
       <section class="limits shell" id="limits" aria-labelledby="limits-title">
         <div class="section-intro">
-          <p class="kicker">Precise about its limits</p>
-          <h2 id="limits-title">A smoke test, not a simulated person.</h2>
+          <p class="kicker">Scope and limits</p>
+          <h2 id="limits-title">Use it with a real screen reader.</h2>
         </div>
         <div class="limits-grid">
           <article>
@@ -144,8 +166,8 @@
 
       <section class="closing">
         <div class="shell closing-inner">
-          <div><p class="kicker">Before the release branch</p><h2>Give one essential flow an audible contract.</h2></div>
-          <a class="primary-link" href="https://www.npmjs.com/package/screen-reader-smoke-test">View npm package <span aria-hidden="true">↗</span></a>
+          <div><p class="kicker">Version 0.1.0</p><h2>Install the tested package.</h2></div>
+          <a class="primary-link" href="/downloads/screen-reader-smoke-test-0.1.0.tgz" download>Download package (.tgz)</a>
         </div>
       </section>
     </main>

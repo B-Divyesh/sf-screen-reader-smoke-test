@@ -94,14 +94,11 @@ afterAll(async () => {
 });
 
 describe("published package consumer", () => {
-  it("runs the npm bin through its symlink to update and recheck a local flow", async () => {
+  it("@claim:download-package @claim:cli-exit-codes @claim:package-formats installs the site tarball and runs every package entry", async () => {
     const consumer = await mkdtemp(join(tmpdir(), "announce-test-consumer-"));
-    let tarball: string | undefined;
     try {
       await execFileAsync("npm", ["run", "build"], { cwd: repository });
-      const { stdout } = await execFileAsync("npm", ["pack", "--json", "--ignore-scripts"], { cwd: repository });
-      const packed = JSON.parse(stdout) as Array<{ filename: string }>;
-      tarball = join(repository, packed[0]!.filename);
+      const tarball = join(repository, "dist", "site", "downloads", "screen-reader-smoke-test-0.1.0.tgz");
 
       await execFileAsync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund", "--no-package-lock", tarball], { cwd: consumer });
       const configPath = join(consumer, "announce-check.config.mjs");
@@ -120,6 +117,11 @@ describe("published package consumer", () => {
       const bin = join(consumer, "node_modules", ".bin", "announce-check");
       expect((await lstat(bin)).isSymbolicLink()).toBe(true);
       const runBin = (args: string[]) => execFileAsync(process.execPath, [bin, ...args], { cwd: consumer });
+      const esm = await execFileAsync(process.execPath, ["--input-type=module", "-e", "import { compareTranscripts } from 'screen-reader-smoke-test'; console.log(compareTranscripts([], []).matches)"], { cwd: consumer });
+      expect(esm.stdout.trim()).toBe("true");
+      const commonJs = await execFileAsync(process.execPath, ["-e", "console.log(require('screen-reader-smoke-test').compareTranscripts([], []).matches)"], { cwd: consumer });
+      expect(commonJs.stdout.trim()).toBe("true");
+      expect(await readFile(join(consumer, "node_modules", "screen-reader-smoke-test", "dist", "library", "index.d.ts"), "utf8")).toContain("declare function runCheck");
       const help = await runBin(["--help"]);
       expect(help.stdout).toContain("Verify focus semantics and ARIA live-region changes");
 
@@ -141,10 +143,12 @@ describe("published package consumer", () => {
           received: { kind: "focus", text: "Register now — button" }
         }
       });
+      const invalid = await runBin(["--unknown"]).catch((error: unknown) => error as { code: number; stderr: string });
+      expect(invalid).toMatchObject({ code: 2 });
+      expect(invalid.stderr).toContain("Unknown option");
     } finally {
       submitValue = "Create account";
       await rm(consumer, { recursive: true, force: true });
-      if (tarball) await rm(tarball, { force: true });
     }
   }, 90_000);
 });

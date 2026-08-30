@@ -35,11 +35,12 @@
   "scripts": {
     "dev:site": "vite --config vite.config.ts",
     "build:lib": "tsup",
-    "build:site": "vite build --config vite.config.ts && node scripts/generate-sw.mjs",
+    "build:site": "vite build --config vite.config.ts && node scripts/package-download.mjs && node scripts/generate-sw.mjs",
     "build": "npm run clean && npm run build:lib && npm run build:site",
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "test": "vitest run",
     "test:watch": "vitest",
+    "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "prepack": "npm run build"
   },

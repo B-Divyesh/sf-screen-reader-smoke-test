@@ -5,7 +5,7 @@ import { loadConfig, validateConfig } from "../src/config.js";
 import { main, parseArgs } from "../src/cli.js";
 
 describe("configuration safety", () => {
-  it("blocks remote targets without an explicit authorization", async () => {
+  it("@claim:origin-boundary blocks remote targets without an explicit authorization", async () => {
     const directory = await mkdtemp(join(process.cwd(), ".announce-test-config-"));
     const path = join(directory, "remote.mjs");
     await writeFile(path, 'export default { name: "Remote", url: "https://example.com", steps: [{ action: "wait", for: 1 }] };');

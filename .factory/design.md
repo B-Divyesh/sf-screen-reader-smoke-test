@@ -80,4 +80,6 @@ the one-line install command remains the first useful action.
 - Product icons are hand-made inline SVG using the same circle/path grammar.
   They are code-native, decorative where appropriate, and carry no external
   license obligations.
-
+- `site/public/og-image.webp` and `site/public/apple-touch-icon.png` are local
+  crops of `announce-field.webp`, made with ImageMagick. They introduce no new
+  source material or license.

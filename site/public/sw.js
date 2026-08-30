@@ -1,7 +1,7 @@
 // `scripts/generate-sw.mjs` replaces these development values in production
 // with a content-addressed cache name and the current Vite asset paths.
 const CACHE = "announce-check-docs-dev";
-const SHELL = ["/", "/privacy/", "/terms/", "/404.html", "/announce-field.webp", "/mark.svg", "/styles.css", "/main.ts"];
+const SHELL = ["/", "/demo/", "/privacy/", "/terms/", "/404.html", "/announce-field.webp", "/og-image.webp", "/apple-touch-icon.png", "/mark.svg", "/styles.css", "/main.ts", "/demo.ts"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

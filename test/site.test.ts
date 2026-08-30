@@ -36,26 +36,91 @@ describe("documentation site", () => {
       const errors: string[] = [];
       page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
       page.on("pageerror", (error) => errors.push(error.message));
-      await page.goto(origin, { waitUntil: "domcontentloaded" });
-      await page.locator("h1").waitFor();
-      expect(await page.locator("h1").count()).toBe(1);
-      expect(await page.locator("main").count()).toBe(1);
-      expect(await page.locator("html").getAttribute("lang")).toBe("en");
-      const footerLinks = await page.locator(".site-footer nav a").all();
-      expect(footerLinks).toHaveLength(3);
-      for (const link of footerLinks) {
-        const box = await link.boundingBox();
-        expect(box?.width).toBeGreaterThanOrEqual(44);
-        expect(box?.height).toBeGreaterThanOrEqual(44);
+      for (const path of ["/", "/demo/", "/privacy/", "/terms/"]) {
+        await page.goto(`${origin}${path}`, { waitUntil: "domcontentloaded" });
+        await page.locator("h1").waitFor();
+        expect(await page.locator("h1").count()).toBe(1);
+        expect(await page.locator("main").count()).toBe(1);
+        expect(await page.locator("html").getAttribute("lang")).toBe("en");
+        expect((await page.title()).length).toBeLessThanOrEqual(60);
+        expect(await page.locator('meta[name="description"]').getAttribute("content")).toBeTruthy();
+        expect(await page.locator('link[rel="canonical"]').getAttribute("href")).toBeTruthy();
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+        const footerLinks = await page.locator(".site-footer nav a").all();
+        expect(footerLinks).toHaveLength(3);
+        for (const link of footerLinks) {
+          const box = await link.boundingBox();
+          expect(box?.width).toBeGreaterThanOrEqual(44);
+          expect(box?.height).toBeGreaterThanOrEqual(44);
+        }
+        await page.keyboard.press("Tab");
+        expect(await page.evaluate(() => document.activeElement?.classList.contains("skip-link"))).toBe(true);
+        await page.keyboard.press("Enter");
+        expect(await page.evaluate(() => location.hash)).toBe("#main");
+        if (path === "/") {
+          await page.getByRole("button", { name: "× Divergence" }).click();
+          expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
+        }
+        const results = await new AxeBuilder({ page }).analyze();
+        expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? ""))).toEqual([]);
       }
-      await page.getByRole("button", { name: "× Divergence" }).click();
-      expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
-      const results = await new AxeBuilder({ page }).analyze();
-      expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? ""))).toEqual([]);
       expect(errors).toEqual([]);
       await context.close();
     }
   }, 30_000);
+
+  it("@claim:demo-first-difference opens a populated sandbox and compares edited transcripts at desktop and mobile", async () => {
+    for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+      const context = await browser.newContext({ viewport, reducedMotion: "reduce", serviceWorkers: "block" });
+      const page = await context.newPage();
+      await page.goto(`${origin}/demo/`, { waitUntil: "domcontentloaded" });
+      expect(await page.locator("h1").textContent()).toBe("Compare an announcement transcript.");
+      expect(await page.locator(".demo-banner").textContent()).toContain("Demo — sample data, nothing is saved");
+      expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
+      expect(await page.locator(".report-action").textContent()).toBe("First difference at event 3.");
+
+      await page.locator("#received-input").fill([
+        "focus: Email address — textbox — required",
+        "focus: Create account — button",
+        "live (polite): Account created"
+      ].join("\n"));
+      await page.getByRole("button", { name: "Compare transcripts" }).press("Enter");
+      expect(await page.locator(".status-title").textContent()).toBe("Contract matched");
+      await page.getByRole("button", { name: "Reset demo" }).press("Space");
+      expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
+      await page.locator("#received-input").fill("changed without an event prefix");
+      await page.getByRole("button", { name: "Compare transcripts" }).click();
+      expect(await page.locator(".status-title").textContent()).toBe("Transcript format needs attention");
+      expect(await page.locator(".report-action").textContent()).toContain("Line 1 must start with");
+      await page.getByRole("button", { name: "Reset demo" }).click();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations.filter((violation) => ["serious", "critical"].includes(violation.impact ?? ""))).toEqual([]);
+      await context.close();
+    }
+  }, 30_000);
+
+  it("@claim:site-no-tracking keeps the complete demo flow same-origin and out of personal browser storage", async () => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
+    const page = await context.newPage();
+    const requests: string[] = [];
+    page.on("request", (request) => requests.push(request.url()));
+    await page.goto(`${origin}/demo/`, { waitUntil: "networkidle" });
+    await page.locator("#received-input").fill("focus: Email address — textbox — required");
+    await page.getByRole("button", { name: "Compare transcripts" }).click();
+    await page.getByRole("button", { name: "Reset demo" }).click();
+
+    expect(requests.length).toBeGreaterThan(0);
+    expect(requests.every((url) => new URL(url).origin === origin)).toBe(true);
+    expect(await context.cookies()).toEqual([]);
+    expect(await page.evaluate(async () => ({
+      local: localStorage.length,
+      session: sessionStorage.length,
+      databases: "databases" in indexedDB ? (await indexedDB.databases()).length : 0
+    }))).toEqual({ local: 0, session: 0, databases: 0 });
+    await context.close();
+  });
 
   it("keeps the privacy repository link at least 44 CSS pixels tall", async () => {
     for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
@@ -70,12 +135,13 @@ describe("documentation site", () => {
     }
   });
 
-  it("precaches the built assets for a cold-cache offline reload and versions every worker shell", async () => {
+  it("@claim:offline-demo precaches the built demo for a cold-cache offline reload and versions every worker shell", async () => {
     await execFileAsync("npm", ["run", "build:site"]);
     const builtIndex = await readFile("dist/site/index.html", "utf8");
     const worker = await readFile("dist/site/sw.js", "utf8");
     const staticConfig = JSON.parse(await readFile("site/public/staticwebapp.config.json", "utf8")) as {
       globalHeaders: Record<string, string>;
+      routes: Array<{ route: string; rewrite?: string }>;
       responseOverrides: Record<string, { rewrite: string; statusCode: number }>;
     };
     const assets = [...builtIndex.matchAll(/(?:src|href)="(\/assets\/[^\"]+)"/g)].map((match) => match[1]!);
@@ -87,6 +153,7 @@ describe("documentation site", () => {
     expect(worker).toContain("networkFirstDocument");
     expect(worker).toContain("cacheFirstAsset");
     expect(initialCache).toBeTruthy();
+    expect(staticConfig.routes).toContainEqual({ route: "/demo", rewrite: "/demo/index.html" });
     expect(staticConfig.responseOverrides["404"]).toEqual({ rewrite: "/404.html", statusCode: 404 });
     expect(staticConfig.globalHeaders).toMatchObject({
       "Content-Security-Policy": expect.stringContaining("default-src 'self'"),
@@ -129,12 +196,21 @@ describe("documentation site", () => {
       await page.waitForFunction(() => navigator.serviceWorker.ready.then(() => true), undefined, { timeout: 10_000 });
       await page.reload({ waitUntil: "domcontentloaded", timeout: 10_000 });
       await page.waitForFunction(() => navigator.serviceWorker.controller !== null, undefined, { timeout: 10_000 });
+      await page.goto(`${builtOrigin}/demo/`, { waitUntil: "domcontentloaded", timeout: 10_000 });
+      await page.locator(".status-title").waitFor();
       const cdp = await context.newCDPSession(page);
       await cdp.send("Network.clearBrowserCache");
       await context.setOffline(true);
       await page.reload({ waitUntil: "domcontentloaded", timeout: 10_000 });
-      expect(await page.locator(".status-title").textContent()).toBe("Contract matched");
+      expect(await page.locator(".status-title").textContent()).toBe("Contract diverged");
       expect(await page.locator("#offline-banner").isHidden()).toBe(false);
+      await page.locator("#received-input").fill([
+        "focus: Email address — textbox — required",
+        "focus: Create account — button",
+        "live (polite): Account created"
+      ].join("\n"));
+      await page.getByRole("button", { name: "Compare transcripts" }).click();
+      expect(await page.locator(".status-title").textContent()).toBe("Contract matched");
       await context.setOffline(false);
 
       // Reproduce the verifier's stale-document sentinel, then deliver a new
@@ -153,8 +229,8 @@ describe("documentation site", () => {
         const keys = await caches.keys();
         return keys.includes(newCache) && !keys.includes(oldCache);
       }, { oldCache: initialCache!, newCache: updatedCache }, { timeout: 10_000 });
-      await page.reload({ waitUntil: "domcontentloaded", timeout: 10_000 });
-      expect(await page.locator("h1").textContent()).toContain("Hear the break");
+      await page.goto(builtOrigin, { waitUntil: "domcontentloaded", timeout: 10_000 });
+      expect(await page.locator("h1").textContent()).toContain("Catch changed focus");
       expect(errors).toEqual([]);
     } finally {
       await context.close();

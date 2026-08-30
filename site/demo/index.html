@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Edit two sample accessibility transcripts and see the first focus or live-region change.">
+    <meta name="theme-color" content="#f4f0e6">
+    <meta property="og:title" content="Demo — Announce Check">
+    <meta property="og:description" content="Edit two sample accessibility transcripts and see the first changed event.">
+    <meta property="og:image" content="https://screen-reader-smoke-test.sociobot.in/og-image.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://screen-reader-smoke-test.sociobot.in/demo/">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>Demo — Announce Check</title>
+    <link rel="canonical" href="https://screen-reader-smoke-test.sociobot.in/demo/">
+    <link rel="icon" href="/mark.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/demo.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="demo-banner" role="status">
+      <strong>Demo — sample data, nothing is saved</strong>
+      <span class="demo-banner-actions">
+        <button type="button" id="reset-demo">Reset demo</button>
+        <a href="/#install">Start for real</a>
+      </span>
+    </div>
+    <div class="offline-banner" id="offline-banner" role="status" hidden>
+      You’re offline. This sample still works.
+    </div>
+    <header class="site-header shell">
+      <a class="brand" href="/" aria-label="Announce Check home">
+        <svg aria-hidden="true" viewBox="0 0 48 48" width="40" height="40"><circle cx="13" cy="24" r="7"/><path d="M20 24h9M30 17c4 4 4 10 0 14M35 12c7 7 7 17 0 24"/></svg>
+        <span>Announce Check</span>
+      </a>
+      <nav aria-label="Primary"><a aria-current="page" href="/demo/">Demo</a><a class="nav-install" href="/#install">Install</a></nav>
+    </header>
+
+    <main id="main" class="playground-main shell">
+      <div class="playground-intro">
+        <p class="kicker">Signup confirmation / sample flow</p>
+        <h1>Compare an announcement transcript.</h1>
+        <p class="lede">Edit the received events, then compare them with the approved focus and live-region sequence.</p>
+      </div>
+
+      <form class="playground" id="playground-form">
+        <div class="playground-inputs">
+          <label>Expected transcript<textarea id="expected-input" rows="7" spellcheck="false" aria-describedby="input-help">focus: Email address — textbox — required
+focus: Create account — button
+live (polite): Account created</textarea></label>
+          <label>Received transcript<textarea id="received-input" rows="7" spellcheck="false" aria-describedby="input-help">focus: Email address — textbox — required
+focus: Create account — button
+live (polite): Check your inbox</textarea></label>
+        </div>
+        <p class="input-help" id="input-help">Use one event per line. Start each line with <code>focus:</code> or <code>live (polite):</code>.</p>
+        <button class="instrument-button" type="submit">Compare transcripts</button>
+      </form>
+
+      <section class="playground-result" aria-labelledby="result-title" aria-live="polite" aria-atomic="true">
+        <div class="report-topline">
+          <p><span class="status-symbol">×</span> <strong class="status-title" id="result-title">Contract diverged</strong></p>
+          <span class="event-count">3 / 3 events</span>
+        </div>
+        <div class="transcripts">
+          <section aria-labelledby="expected-title"><h2 id="expected-title">Expected</h2><ol class="expected-list"></ol></section>
+          <section aria-labelledby="received-title"><h2 id="received-title">Received</h2><ol class="received-list"></ol></section>
+        </div>
+        <p class="report-action">First difference at event 3.</p>
+      </section>
+      <p class="demo-scope"><strong>This browser sample compares transcript data only.</strong> The downloaded CLI drives Chromium and captures the events.</p>
+    </main>
+
+    <footer class="site-footer shell">
+      <p><strong>Announce Check</strong> compares one checked-in browser flow.</p>
+      <nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-screen-reader-smoke-test">Source</a></nav>
+    </footer>
+  </body>
+</html>

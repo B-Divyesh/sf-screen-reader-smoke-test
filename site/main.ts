@@ -38,7 +38,7 @@ function showDemo(mode: string) {
   receivedList.innerHTML = listMarkup(received, difference, isError ? "Chromium could not start" : "No accessibility events captured");
   statusTitle.textContent = isMatch ? "Contract matched" : isError ? "Check could not run" : isEmpty ? "No events captured" : "Contract diverged";
   statusSymbol.textContent = isMatch ? "✓" : isEmpty ? "○" : "×";
-  statusSymbol.style.background = isMatch ? "var(--green)" : "var(--coral)";
+  statusSymbol.classList.toggle("is-match", isMatch);
   eventCount.textContent = isError ? "Run error" : `${received.length} / ${expected.length} events`;
   reportAction.hidden = isMatch;
   reportAction.textContent = isError
@@ -58,7 +58,7 @@ copyButton?.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(copyButton.dataset.copy ?? "");
     copyButton.querySelector("span")!.textContent = "Copied";
-    if (copyStatus) copyStatus.textContent = "Install command copied. No data left this page.";
+    if (copyStatus) copyStatus.textContent = "Install command copied.";
   } catch {
     if (copyStatus) copyStatus.textContent = "Select the command and copy it manually.";
   }

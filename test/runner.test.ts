@@ -28,7 +28,7 @@ afterAll(async () => {
 });
 
 describe("documented signup flow", () => {
-  it("records, redacts, reports, and then matches a checked-in contract", async () => {
+  it("@claim:local-private-flow records, redacts, reports, and then matches a checked-in contract", async () => {
     const directory = await mkdtemp(join(process.cwd(), ".announce-test-run-"));
     const configPath = join(directory, "announce-check.config.mjs");
     const expectedPath = join(directory, "announce-check.expected.json");

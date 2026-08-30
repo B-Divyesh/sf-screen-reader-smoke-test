@@ -46,6 +46,27 @@ afterAll(async () => {
 });
 
 describe("browser flow capture boundaries", () => {
+  it("@claim:workflow-steps runs every documented flow action against a loopback page", async () => {
+    const config: AnnounceCheckConfig = {
+      name: "Documented actions",
+      url: origin,
+      steps: [
+        { action: "fill", target: { label: "Email address" }, value: "actions@example.test" },
+        { action: "press", target: { label: "Email address" }, key: "Tab" },
+        { action: "click", target: { role: "button", name: "Create account" } },
+        { action: "goto", url: "/ready" },
+        { action: "wait", for: { selector: "#confirmation" } },
+        { action: "wait", for: { text: "Create an account" } },
+        { action: "wait", for: 10 }
+      ]
+    };
+
+    const events = await executeFlow(config);
+    expect(events.some((event) => event.text === "Email address — textbox — required")).toBe(true);
+    expect(events.some((event) => event.text === "Create account — button")).toBe(true);
+    expect(events.map((event) => event.text).join("\n")).not.toContain("actions@example.test");
+  }, 30_000);
+
   it("keeps each synchronous focusin event attached to the element that emitted it", async () => {
     const config: AnnounceCheckConfig = {
       name: "Synchronous form recovery",

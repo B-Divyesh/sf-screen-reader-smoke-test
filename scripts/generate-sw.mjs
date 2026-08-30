@@ -5,7 +5,7 @@ import { join, relative } from "node:path";
 const siteDirectory = join(process.cwd(), "dist", "site");
 const sourcePath = join(process.cwd(), "site", "public", "sw.js");
 const outputPath = join(siteDirectory, "sw.js");
-const staticShell = ["/", "/privacy/", "/terms/", "/404.html", "/announce-field.webp", "/mark.svg"];
+const staticShell = ["/", "/demo/", "/privacy/", "/terms/", "/404.html", "/announce-field.webp", "/og-image.webp", "/apple-touch-icon.png", "/mark.svg"];
 
 async function htmlFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });

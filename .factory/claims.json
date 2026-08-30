@@ -1,0 +1,72 @@
+[
+  {
+    "id": "demo-first-difference",
+    "claim": "The sample playground compares edited transcripts and identifies the first changed event.",
+    "where": "home primary action, /demo, README",
+    "test": "npm test -- --testNamePattern @claim:demo-first-difference",
+    "sandbox": "fresh desktop and 390px browser contexts at /demo; edit the received transcript, compare, reset, and run Axe"
+  },
+  {
+    "id": "local-private-flow",
+    "claim": "The CLI captures a local signup flow, redacts the filled value, writes a local report, and rechecks the saved transcript.",
+    "where": "home facts and report preview, privacy policy, README",
+    "test": "npm test -- --testNamePattern @claim:local-private-flow",
+    "sandbox": "temporary directory and loopback signup fixture; assert captured events, redaction, report output, and matching recheck"
+  },
+  {
+    "id": "site-no-tracking",
+    "claim": "The site and demo use no accounts, cookies, analytics, telemetry, personal browser storage, or third-party runtime requests.",
+    "where": "home facts, privacy policy, README",
+    "test": "npm test -- --testNamePattern @claim:site-no-tracking",
+    "sandbox": "fresh 390px browser context; record every demo request and inspect cookies, localStorage, sessionStorage, and IndexedDB"
+  },
+  {
+    "id": "offline-demo",
+    "claim": "The guide and sample playground work offline after the first visit.",
+    "where": "offline status, README",
+    "test": "npm test -- --testNamePattern @claim:offline-demo",
+    "sandbox": "fresh browser context; install the built service worker, visit /demo, clear browser cache, go offline, reload, and compare"
+  },
+  {
+    "id": "download-package",
+    "claim": "The versioned package download installs and runs in a fresh Node project.",
+    "where": "home install section, README",
+    "test": "npm test -- --testNamePattern @claim:download-package",
+    "sandbox": "build the site tarball, install it into an empty temporary project, and run its linked CLI against a loopback fixture"
+  },
+  {
+    "id": "cli-exit-codes",
+    "claim": "The CLI exits 0 for a match or update, 1 for a difference, and 2 for invalid input.",
+    "where": "README usage",
+    "test": "npm test -- --testNamePattern @claim:cli-exit-codes",
+    "sandbox": "fresh packed-package consumer; record, match, change the accessible name, and pass an unknown option"
+  },
+  {
+    "id": "origin-boundary",
+    "claim": "Remote target URLs require explicit authorization; loopback targets work by default.",
+    "where": "privacy policy, README",
+    "test": "npm test -- --testNamePattern @claim:origin-boundary",
+    "sandbox": "temporary config with a remote URL; assert loading fails before Chromium starts unless allowRemote is explicit"
+  },
+  {
+    "id": "workflow-steps",
+    "claim": "A flow can fill, click, press a key, navigate, and wait for page state.",
+    "where": "README supported steps",
+    "test": "npm test -- --testNamePattern @claim:workflow-steps",
+    "sandbox": "loopback browser fixture; execute every documented action type and assert the resulting focus sequence"
+  },
+  {
+    "id": "package-formats",
+    "claim": "The package provides ESM, CommonJS, TypeScript declarations, the documented public functions, and the CLI binary.",
+    "where": "README programmatic API",
+    "test": "npm test -- --testNamePattern @claim:package-formats",
+    "sandbox": "fresh temporary consumer installed from the site tarball; load ESM and CommonJS, inspect declarations, and invoke the linked binary"
+  },
+  {
+    "id": "mit-license",
+    "claim": "Announce Check is free software under the MIT License.",
+    "where": "terms, README, package metadata",
+    "test": "npm test -- --testNamePattern @claim:mit-license",
+    "sandbox": "clean repository files; assert package metadata declares MIT and the shipped LICENSE contains the MIT grant"
+  }
+]

@@ -4,6 +4,12 @@ All notable changes follow [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+- Add the isolated `/demo/` transcript playground, its reset controls, offline
+  shell, claims manifest, and browser regression coverage.
+- Replace the unavailable npm-registry link with a tested, versioned package
+  download produced as part of the static-site build.
+- Replace metaphorical first-screen copy with the product's job, intended team,
+  sample action, and three verified facts.
 - Preserve a native button's accessible name when it comes from a descendant
   image's alternative text, so an `alt` regression fails its checked-in
   announcement contract.
