@@ -53,6 +53,14 @@ describe("documentation site", () => {
           expect(box?.width).toBeGreaterThanOrEqual(44);
           expect(box?.height).toBeGreaterThanOrEqual(44);
         }
+        const undersizedTargets = await page.locator("a, button").evaluateAll((elements) => elements.flatMap((element) => {
+          const box = element.getBoundingClientRect();
+          const visible = box.width > 0 && box.height > 0 && getComputedStyle(element).visibility !== "hidden";
+          return visible && (box.width < 44 || box.height < 44)
+            ? [{ text: (element.textContent ?? "").trim(), width: box.width, height: box.height }]
+            : [];
+        }));
+        expect(undersizedTargets).toEqual([]);
         await page.keyboard.press("Tab");
         expect(await page.evaluate(() => document.activeElement?.classList.contains("skip-link"))).toBe(true);
         await page.keyboard.press("Enter");

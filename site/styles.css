@@ -31,7 +31,7 @@ button, textarea { font: inherit; }
 .brand { display: inline-flex; min-height: 44px; align-items: center; gap: .75rem; font-weight: 800; text-decoration: none; }
 .brand svg, .limits svg { fill: none; stroke: currentColor; stroke-width: 2.5; }
 .site-header nav, .site-footer nav { display: flex; gap: clamp(1rem, 3vw, 2rem); align-items: center; }
-.site-header nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; font-weight: 700; text-decoration-thickness: 1px; }
+.site-header nav a { display: inline-flex; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; font-size: .875rem; font-weight: 700; text-decoration-thickness: 1px; }
 .nav-install { padding-inline: 1rem; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); text-decoration: none; }
 
 .hero { display: grid; grid-template-columns: .92fr 1.08fr; align-items: center; gap: clamp(2rem, 6vw, 6rem); min-height: 700px; padding-block: clamp(4rem, 8vw, 7rem); }
