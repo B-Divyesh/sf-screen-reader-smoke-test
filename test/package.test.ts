@@ -25,7 +25,17 @@ let server: ReturnType<typeof createServer>;
 let origin: string;
 
 beforeAll(async () => {
-  server = createServer((request, response) => {
+  server = createServer(async (request, response) => {
+    if (request.url === "/screen-reader-smoke-test-0.1.0.tgz") {
+      try {
+        const tarball = await readFile(join(repository, "dist", "site", "downloads", "screen-reader-smoke-test-0.1.0.tgz"));
+        response.writeHead(200, { "content-type": "application/octet-stream" });
+        response.end(tarball);
+      } catch {
+        response.writeHead(404).end();
+      }
+      return;
+    }
     if (request.url === "/create-account.svg") {
       response.writeHead(200, { "content-type": "image/svg+xml" });
       response.end('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"></svg>');
@@ -99,8 +109,11 @@ describe("published package consumer", () => {
     try {
       await execFileAsync("npm", ["run", "build"], { cwd: repository });
       const tarball = join(repository, "dist", "site", "downloads", "screen-reader-smoke-test-0.1.0.tgz");
+      const builtHome = await readFile(join(repository, "dist", "site", "index.html"), "utf8");
+      expect(builtHome).toContain("https://screen-reader-smoke-test.sociobot.in/downloads/screen-reader-smoke-test-0.1.0.tgz");
+      expect((await lstat(tarball)).isFile()).toBe(true);
 
-      await execFileAsync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund", "--no-package-lock", tarball], { cwd: consumer });
+      await execFileAsync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund", "--no-package-lock", `${origin}/screen-reader-smoke-test-0.1.0.tgz`], { cwd: consumer });
       const configPath = join(consumer, "announce-check.config.mjs");
       const expectedPath = join(consumer, "announce-check.expected.json");
       await writeFile(configPath, `export default {
