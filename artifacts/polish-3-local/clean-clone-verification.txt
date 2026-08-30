@@ -1,0 +1,35 @@
+Final clean-clone verification — 2026-08-30 UTC
+
+Clone: /tmp/announce-check-polish-3-final-Ws56dI
+Commit: 90122f79f6079df0f2a33e1d90e0a4377cd5f93a
+Install: npm ci — PASS (95 packages, 0 vulnerabilities)
+
+Every exact command in .factory/claims.json:
+- demo-first-difference — PASS
+- local-private-flow — PASS
+- site-no-tracking — PASS
+- offline-demo — PASS
+- download-package — PASS
+- cli-exit-codes — PASS
+- ci-recheck — PASS
+- cli-output-modes — PASS
+- build-artifacts — PASS
+- local-site — PASS
+- origin-boundary — PASS
+- workflow-steps — PASS
+- package-formats — PASS
+- mit-license — PASS
+
+Full gates:
+- npm test — PASS, 8 files / 27 tests, 48.78 s
+- npm run lint — PASS
+- npm run build — PASS
+- npm pack --dry-run --json --ignore-scripts — PASS, 12 files, 51.9 kB
+- git diff --check — PASS
+- post-suite process check — PASS, no Vite process remained
+
+Built site budget:
+- home JavaScript: 0.50 + 1.19 kB gzip
+- demo JavaScript: 0.50 + 1.19 kB gzip
+- shared CSS: 4.01 kB gzip
+- hero image: 37 kB

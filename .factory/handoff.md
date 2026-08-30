@@ -1,31 +1,76 @@
-# Polish 2 handoff — Announce Check
+# Polish 3 handoff — Announce Check
 
 Date: 2026-08-30 UTC
 
-Work order: `screen-reader-smoke-test-polish-2`
+Work order: `screen-reader-smoke-test-polish-3`
 
-Base review commit: `5943d87345db41dd36a3e3084ca4a13948afab9b`
+Candidate: `cae2c69b4836aaf7d317e70f35f485b8274d5387`
 
-Repair commit deployed: `7b842899fa04c4dc2c131b4a78a17f6f4ac0c23f`
+Deployed code commit: `90122f79f6079df0f2a33e1d90e0a4377cd5f93a`
+
 Live URL: <https://screen-reader-smoke-test.sociobot.in/>
 
 ## Completed
 
-- Resolved every finding in `.factory/review-1.md` and `.factory/review-2.md`; the detailed id-to-change mapping is in `.factory/polish-2.md`.
-- Moved the real, populated demo result above the editors. `?demo=1` redirects to its isolated sample page, shows the persistent banner, resets bundled sample data, and never writes personal browser storage.
-- Repaired the real generated CLI report language, added three missing claims with observable tests, removed untestable release/process promises, and rewrote public copy around one term: “event list.”
-- Made the primary header route-consistent, retained destination focus/live announcements and complete route metadata/404, and made tested privacy, offline, and MIT facts fit above the fold.
-- Preserved the original warm-paper, cobalt-geometry visual system; no external fonts, scripts, analytics, or runtime services were added.
+- Re-audited every finding in `.factory/review-1.md`,
+  `.factory/review-2.md`, `.factory/polish-1.md`, and
+  `.factory/polish-2.md`. The cited review commit contains review 2; no
+  `.factory/review-3.md` exists in that commit, the candidate, or reachable
+  history. The cumulative mapping is in `.factory/polish-3.md`.
+- Replaced per-test/brittle Vite startup with one globalSetup server, 60-second
+  HTTP readiness polling, shared origin injection, and one globalTeardown.
+- Strengthened direct `?demo=1`, sample reset, privacy, mobile first-screen,
+  exact route metadata, shared header/footer, focus announcement, legal-link,
+  sitemap, and deployment-404 regressions.
+- Added a manifest integrity test so each of 14 claims has exactly one known
+  tagged test. Updated claim terminology and the verb-first 80-character
+  catalog description.
+- During the final cold visual pass, fixed Reset focus being partly covered by
+  the sticky mobile banner, added a regression, redeployed, and rechecked.
+- Preserved the warm-paper, cobalt construction-line, editorial-serif and
+  monospaced instrument identity. The artifact remains an npm library with
+  ESM, CommonJS, declarations, CLI, tarball, and static documentation site.
 
-## How verified
+## Verification
 
-- Fresh clone `/tmp/announce-check-polish-2-X6evwW` at `7b84289`: ran `npm ci`, then all 14 exact claim commands from `.factory/claims.json` independently. Every command passed, including fresh packed-consumer output modes, build artifacts, and the documented local dev server.
-- Full suite: `npm test` passed (25 tests). `npm run lint`, `npm run build`, `npm pack --dry-run --json --ignore-scripts`, and `git diff --check` passed.
-- Browser/accessibility: local Playwright covers desktop/mobile keyboard operation, focus, responsive bounds, storage/privacy, service-worker offline reload, console errors, and Axe. The live cold pass recorded zero serious/critical Axe issues on `/`, `/demo/?demo=1`, `/privacy/`, `/terms/`, and `/missing-polish-2`.
-- Production deployment: `/opt/fleet/lib/deploy-static.sh screen-reader-smoke-test dist/site` succeeded as deployment `9b39c7f8-7326-44a6-9912-b77509c02a31`. `/opt/fleet/lib/verify-url.sh` passed in `artifacts/polish-2-live/verify.json` (895 ms cold load, no console errors).
-- Live evidence: `artifacts/polish-2-live/live-check.json` records shared headers, titles, 404 status, focus, reset, empty personal storage, same-origin requests, and offline demo reload. `artifacts/polish-2-live/demo-mobile.png` shows both changed sample status messages above the first mobile fold.
+- Final clean clone: `/tmp/announce-check-polish-3-final-Ws56dI` at `90122f7`.
+  `npm ci` reported 0 vulnerabilities. All 14 exact claim commands passed.
+- Full clean-clone suite: `npm test` passed 27/27 across unit, packed-consumer,
+  browser, accessibility, privacy, offline, routing, and build tests.
+- `npm run lint`, `npm run build`,
+  `npm pack --dry-run --json --ignore-scripts`, and `git diff --check` passed.
+  The package dry-run contains 12 files and is 51.9 kB.
+- The deterministic harness passed three consecutive full runs (49.45 s,
+  48.93 s, 49.46 s); every teardown check found no remaining Vite process.
+  The previous false timeout was reproduced with HTTP ready and its stdout
+  readiness marker absent after 15 seconds.
+- Final deployment `3e0c1171-be51-412a-90f2-6ca96e851248` succeeded. The
+  factory URL verifier passed at 552 ms with no console errors.
+- Cold live Playwright/Axe checks passed `/`, `/demo/`, `/privacy/`, `/terms/`,
+  and a real HTTP-404 route at desktop and mobile. Direct demo isolation,
+  reset/focus visibility, same-origin requests, empty personal storage,
+  offline reload, legal links, exact titles/canonicals/social metadata,
+  security headers, and forward/Back focus all passed.
+- Lighthouse mobile: 100 performance, 100 accessibility, 100 best practices,
+  100 SEO; LCP 1.1 s, CLS 0, TBT 30 ms, total transfer 46 KiB.
+- Built budgets: initial home JS 1.69 kB gzip, demo JS 1.69 kB gzip, shared CSS
+  4.01 kB gzip, hero 37 kB. The local/live tarballs share SHA-256
+  `2924e0837edd70b7b51f6d35aaa4c0af44673f792c60dd5ab91d2d2b0e5c23c3`.
 
-## Run and publish
+Evidence:
+
+- `.factory/polish-3.md`
+- `artifacts/polish-3-local/clean-clone-verification.txt`
+- `artifacts/polish-3-local/harness-reproduction.txt`
+- `artifacts/polish-3-local/repeated-suite-runs.txt`
+- `artifacts/polish-3-live/live-check.json`
+- `artifacts/polish-3-live/verify.json`
+- `artifacts/polish-3-live/lighthouse.json`
+- `artifacts/polish-3-live/home-mobile.png`
+- `artifacts/polish-3-live/demo-mobile.png`
+- `artifacts/polish-3-live/404-mobile.png`
+
+## Run and package
 
 ```sh
 npm ci
@@ -35,8 +80,9 @@ npm run build
 npm pack
 ```
 
-`npm pack` produces the ready-to-publish npm tarball; publishing remains a factory-owned registry action.
+The factory owns registry publication. No package was published from this work
+order.
 
 ## Known gaps
 
-None. The deliberate missing-route check produces the browser’s expected failed-resource console message because its HTTP response is correctly 404; normal product routes are console-clean.
+None.

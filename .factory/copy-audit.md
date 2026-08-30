@@ -1,9 +1,12 @@
 # Landing-page copy audit
 
-Audited 30 August 2026 after polish round 2. Counts split on whitespace;
+Audited 30 August 2026 after polish round 3. Counts split on whitespace;
 hyphenated words and version numbers count as one word. Commands, code samples,
 and event-list fixture rows are excluded. No sentence exceeds 22 words and no
 sentence or label uses a banned marketing word.
+
+Catalog description: “Compare keyboard focus and status messages before
+releasing a critical web flow.” It is verb-first, 12 words, and 80 characters.
 
 ## Landing-page prose and dynamic messages
 

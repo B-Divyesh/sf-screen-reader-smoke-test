@@ -1,0 +1,104 @@
+{
+  "checkedAt": "2026-08-30T05:08:00Z",
+  "url": "https://screen-reader-smoke-test.sociobot.in",
+  "deploymentId": "3e0c1171-be51-412a-90f2-6ca96e851248",
+  "commit": "90122f79f6079df0f2a33e1d90e0a4377cd5f93a",
+  "routes": {
+    "viewports": ["1280x800", "390x844"],
+    "paths": ["/", "/demo/", "/privacy/", "/terms/"],
+    "allStatus200": true,
+    "exactTitles": true,
+    "canonicalAndSocialMetadata": true,
+    "oneH1AndMain": true,
+    "headingFocusedAndAnnounced": true,
+    "sharedHeaderAndLegalFooter": true,
+    "horizontalOverflow": false,
+    "axeSeriousCritical": 0,
+    "consoleErrors": []
+  },
+  "demo": {
+    "entry": "https://screen-reader-smoke-test.sociobot.in/?demo=1",
+    "finalUrl": "https://screen-reader-smoke-test.sociobot.in/demo/?demo=1",
+    "banner": "Demo — sample data, nothing is saved",
+    "initialResult": "First difference at event 3.",
+    "expected": "Account created",
+    "received": "Check your inbox",
+    "resultInside390x844": true,
+    "resetRestoredSample": true,
+    "resetFocusedEditor": true,
+    "resetEditorClearOfStickyBanner": true,
+    "sameOriginRequests": true,
+    "cookies": 0,
+    "localStorage": 0,
+    "sessionStorage": 0,
+    "indexedDB": 0
+  },
+  "firstScreen": {
+    "mobileActionBottom": 529.59375,
+    "mobileFactsBottom": 694.03125,
+    "viewportBottom": 844,
+    "facts": [
+      "Filled values are redacted.",
+      "Works offline after your first visit.",
+      "Free under the MIT License."
+    ]
+  },
+  "navigation": {
+    "homeToDemoFocus": true,
+    "backToHomeFocus": true,
+    "homeAnnouncement": "Catch changed keyboard focus and status messages."
+  },
+  "notFound": {
+    "status": 404,
+    "title": "Page not found — Announce Check",
+    "heading": "This page does not exist.",
+    "headingFocused": true,
+    "axeSeriousCritical": 0,
+    "returnLinks": ["Return home", "Try the sample"]
+  },
+  "offline": {
+    "reloadStatus": 200,
+    "demoResult": "First difference found",
+    "offlineBannerVisible": true
+  },
+  "securityHeaders": {
+    "contentSecurityPolicy": true,
+    "frameAncestors": "none",
+    "referrerPolicy": "strict-origin-when-cross-origin",
+    "xContentTypeOptions": "nosniff",
+    "strictTransportSecurity": true
+  },
+  "links": {
+    "home": 200,
+    "demo": 200,
+    "privacy": 200,
+    "terms": 200,
+    "download": 200,
+    "github": 200,
+    "robots": 200,
+    "sitemap": 200
+  },
+  "downloadSha256": "2924e0837edd70b7b51f6d35aaa4c0af44673f792c60dd5ab91d2d2b0e5c23c3",
+  "localDownloadMatchesLive": true,
+  "lighthouseMobile": {
+    "performance": 100,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "largestContentfulPaint": "1.1 s",
+    "cumulativeLayoutShift": 0,
+    "totalBlockingTime": "30 ms",
+    "speedIndex": "0.9 s",
+    "totalTransfer": "46 KiB"
+  },
+  "factoryVerifier": {
+    "loadMs": 552,
+    "errors": [],
+    "title": "Announce Check — Check browser announcements",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imagesMissingAlt": 0,
+    "buttonsUnlabeled": 0
+  }
+}
