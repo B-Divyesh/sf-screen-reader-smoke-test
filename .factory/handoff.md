@@ -48,17 +48,28 @@ banner (`0–107.58px`).
 
 ## Deployment and live identity
 
-Repair commit `7e6cd05afa29115e141f1ee79cd89ce26e159eda` was pushed to
-`origin/main` with `git push origin main`. The immediate identity check still
-received the previous static deployment (the live root, demo, legal pages, and
-service worker SHA-256 values did not match this build), so this handoff does
-not claim that the live deployment has caught up yet. Re-run the live
-desktop/mobile keyboard, `/opt/fleet/lib/verify-url.sh`, response-policy, and
-byte-identity checks after the static deployment completes.
+Code repair `7e6cd05afa29115e141f1ee79cd89ce26e159eda` and handoff/coverage
+commit `9bc991a3dc832775d06f5af1a53ff5314eb68b00` were pushed to `origin/main`;
+`git ls-remote` confirms that `origin/main` is at the latter commit. Repeated
+identity polls over several minutes still received the previous static
+deployment: its root SHA-256 was
+`0ac3b208c55f99fbb6c3d10b7f5feb759942f32f1ae3490391b9c6b0b351c1bc`,
+while this build is
+`2aa76234c9d795bc12641906b09351912a252d8c71c7c6f7bc839a65702145d3`.
+
+The required `verify-url.sh` check passes against the currently served (old)
+site in 559 ms with zero console errors, a title/lang/main, one h1, no missing
+alt text, and no unlabeled buttons. That result is deliberately not credited to
+the candidate: the old page still contains the removed route announcer. Its
+response policy is healthy (self-only CSP with `frame-ancestors 'none'`, HSTS,
+`nosniff`, strict-origin referrer policy, HTML must-revalidate caching, and
+`sw.js` no-cache). Re-run the live desktop/mobile keyboard, Axe, offline,
+response-policy, and byte-identity checks after the static deployment completes.
 
 ## Known gaps / next step
 
 No local product or quality-gate gaps remain. The only outstanding external
-step is confirmation that the factory static deployment has served the pushed
-repair, followed by the live identity checks above. npm registry publication
-remains factory-owned and is intentionally not performed by this work order.
+step is the factory static deployment serving the pushed repair; no deployment
+token or deployment configuration is present in this repository. Follow it
+with the live identity checks above. npm registry publication remains
+factory-owned and is intentionally not performed by this work order.
