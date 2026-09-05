@@ -1,9 +1,10 @@
 # Landing-page copy audit
 
-Audited 30 August 2026 after polish round 3. Counts split on whitespace;
-hyphenated words and version numbers count as one word. Commands, code samples,
-and event-list fixture rows are excluded. No sentence exceeds 22 words and no
-sentence or label uses a banned marketing word.
+Audited 5 September 2026 after repair round 7. Counts split on whitespace after
+Markdown is removed. Standalone punctuation does not count. Hyphenated terms,
+command paths, URLs, and version numbers each count as one word. Code samples,
+event-list fixture rows, headings, and control labels are excluded. No sentence
+exceeds 22 words and no sentence or label uses a banned marketing word.
 
 Catalog description: “Compare keyboard focus and status messages before
 releasing a critical web flow.” It is verb-first, 12 words, and 80 characters.
@@ -12,6 +13,8 @@ releasing a critical web flow.” It is verb-first, 12 words, and 80 characters.
 
 | Words | Copy |
 | ---: | --- |
+| 2 | You’re offline. |
+| 11 | The guide and sample report still work; installation needs a connection. |
 | 7 | Catch changed keyboard focus and status messages. |
 | 11 | For small web teams checking one critical form flow before release. |
 | 10 | Loads a sample event list and shows its first change. |
@@ -36,36 +39,39 @@ releasing a critical web flow.” It is verb-first, 12 words, and 80 characters.
 | 4 | Check could not run. |
 | 8 | Choose another state to inspect an event list. |
 | 7 | Install Chromium with: npx playwright install chromium. |
-| 13 | Move focus or update a role=status / aria-live region in the scripted flow. |
+| 12 | Move focus or update a role=status / aria-live region in the scripted flow. |
 | 15 | First difference at event 3: review the status message or update the approved event list. |
 | 3 | Install command copied. |
 | 7 | Select the command and copy it manually. |
 | 4 | Keep the human check. |
 | 15 | Run Announce Check before release, then verify the release candidate with a real screen reader. |
 | 4 | Install the tested package. |
-| 13 | Announce Check compares one checked-in browser flow. Version 0.1.0 · Built by Param Factory. |
+| 7 | Announce Check compares one checked-in browser flow. |
+| 6 | Version 0.1.0 · Built by Param Factory. |
 
 ## README prose
 
 | Words | Copy |
 | ---: | --- |
-| 14 | Announce Check compares a saved list of keyboard-focus and status-message events for one critical browser flow. |
-| 14 | It runs Chromium, compares the new event list with the approved list, and writes a local HTML report. |
+| 16 | Announce Check compares a saved list of keyboard-focus and status-message events for one critical browser flow. |
+| 18 | It runs Chromium, compares the new event list with the approved list, and writes a local HTML report. |
 | 15 | It is for small web teams checking a signup, search, or form flow before release. |
-| 7 | Announce Check observes browser accessibility events. |
+| 6 | Announce Check observes browser accessibility events. |
 | 11 | It does not emulate NVDA, VoiceOver, JAWS, or certify WCAG conformance. |
 | 10 | Keep a short manual screen-reader check in your release process. |
-| 8 | Install version 0.1.0 from the documentation site. |
-| 15 | It loads an approved signup event list and a changed received event list in one click. |
+| 7 | Install version 0.1.0 from the documentation site. |
+| 2 | Open https://screen-reader-smoke-test.sociobot.in/demo/. |
+| 16 | It loads an approved signup event list and a changed received event list in one click. |
 | 9 | Edit either input to see the first changed event. |
 | 5 | Reset restores the bundled sample. |
-| 10 | The guide and playground work offline after one online visit. |
-| 15 | The demo stores no cookies or personal browser data and sends no third-party runtime requests. |
+| 10 | The guide and demo work offline after one online visit. |
+| 15 | The demo stores no cookies or personal data and sends requests only to this site. |
+| 2 | Create announce-check.config.mjs. |
 | 12 | Record the first local event list, review it, and check it in. |
 | 6 | Then run it in automated checks. |
 | 9 | The command exits 0 on a match or update. |
-| 17 | It exits 1 on an event-list difference and 2 for invalid input or a browser failure. |
-| 7 | It writes announce-check-report/index.html by default. |
+| 16 | It exits 1 on an event-list difference and 2 for invalid input, target, or browser failures. |
+| 5 | It writes announce-check-report/index.html by default. |
 | 6 | --json writes one result to stdout. |
 | 7 | Use --report <directory> to move the report. |
 | 5 | Use --no-report to skip it. |
@@ -78,8 +84,8 @@ releasing a critical web flow.” It is verb-first, 12 words, and 80 characters.
 | 13 | npm run build produces the publishable library and the static site at dist/site/. |
 | 6 | The versioned download is in dist/site/downloads/. |
 | 8 | Run the site locally with npm run dev:site. |
-| 14 | The project has no tracking, accounts, cookies, remote fixture storage, or third-party runtime assets. |
-| 7 | Reports and event lists stay on your machine. |
+| 16 | The project has no tracking, accounts, cookies, hosted test data, or files loaded from other sites. |
+| 8 | Reports and event lists stay on your machine. |
 | 6 | MIT © 2026 Sociobot (Param Factory). |
 
 ## First-screen read-aloud check

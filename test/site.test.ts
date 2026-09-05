@@ -180,6 +180,7 @@ describe("documentation site", () => {
       await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
 
       expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
+      expect(await page.locator("#route-announcement").textContent()).toBe("");
       await page.keyboard.press("Tab");
       expect(await page.locator(".skip-link").evaluate((link) => document.activeElement === link)).toBe(true);
       const skipBox = await page.locator(".skip-link").boundingBox();
@@ -190,6 +191,31 @@ describe("documentation site", () => {
       expect(await page.getByRole("link", { name: "Announce Check home" }).evaluate((link) => document.activeElement === link)).toBe(true);
       await page.keyboard.press("Tab");
       expect(await page.getByRole("link", { name: "Demo" }).evaluate((link) => document.activeElement === link)).toBe(true);
+      await context.close();
+    }
+  });
+
+  it("focuses and announces headings after internal navigation and Back without changing cold-load focus", async () => {
+    for (const viewport of [{ width: 1280, height: 800 }, { width: 390, height: 844 }]) {
+      const context = await browser.newContext({ viewport, serviceWorkers: "block" });
+      const page = await context.newPage();
+      await page.goto(`${origin}/`, { waitUntil: "domcontentloaded" });
+
+      expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
+      await page.keyboard.press("Tab");
+      expect(await page.locator(".skip-link").evaluate((link) => document.activeElement === link)).toBe(true);
+
+      const demoLink = page.getByRole("link", { name: "Try it with sample data" });
+      await demoLink.focus();
+      await page.keyboard.press("Enter");
+      await page.waitForURL(`${origin}/demo/?demo=1`);
+      await expect.poll(() => page.locator("h1").evaluate((node) => document.activeElement === node)).toBe(true);
+      await expect.poll(() => page.locator("#route-announcement").textContent()).toBe("Compare two sample event lists.");
+
+      await page.goBack({ waitUntil: "domcontentloaded" });
+      await page.waitForURL(`${origin}/`);
+      await expect.poll(() => page.locator("h1").evaluate((node) => document.activeElement === node)).toBe(true);
+      await expect.poll(() => page.locator("#route-announcement").textContent()).toBe("Catch changed keyboard focus and status messages.");
       await context.close();
     }
   });

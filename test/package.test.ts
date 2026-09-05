@@ -74,7 +74,7 @@ describe("published package consumer with an image-named native button", () => {
       };`);
 
       const bin = join(consumer, "node_modules", ".bin", "announce-check");
-      const runBin = (args: string[]) => execFileAsync(process.execPath, [bin, ...args], { cwd: consumer });
+      const runBin = (args: string[], env = process.env) => execFileAsync(process.execPath, [bin, ...args], { cwd: consumer, env });
 
       const updated = await runBin(["announce-check.config.mjs", "--update", "--json", "--no-report"]);
       expect(JSON.parse(updated.stdout)).toMatchObject({ updated: true, matches: true });
@@ -129,7 +129,7 @@ describe("published package consumer", () => {
 
       const bin = join(consumer, "node_modules", ".bin", "announce-check");
       expect((await lstat(bin)).isSymbolicLink()).toBe(true);
-      const runBin = (args: string[]) => execFileAsync(process.execPath, [bin, ...args], { cwd: consumer });
+      const runBin = (args: string[], env = process.env) => execFileAsync(process.execPath, [bin, ...args], { cwd: consumer, env });
       const esm = await execFileAsync(process.execPath, ["--input-type=module", "-e", "import { compareTranscripts } from 'screen-reader-smoke-test'; console.log(compareTranscripts([], []).matches)"], { cwd: consumer });
       expect(esm.stdout.trim()).toBe("true");
       const commonJs = await execFileAsync(process.execPath, ["-e", "console.log(require('screen-reader-smoke-test').compareTranscripts([], []).matches)"], { cwd: consumer });
@@ -171,6 +171,43 @@ describe("published package consumer", () => {
       const invalid = await runBin(["--unknown"]).catch((error: unknown) => error as { code: number; stderr: string });
       expect(invalid).toMatchObject({ code: 2 });
       expect(invalid.stderr).toContain("Unknown option");
+
+      const unavailableServer = createServer();
+      await new Promise<void>((done) => unavailableServer.listen(0, "127.0.0.1", done));
+      const unavailableAddress = unavailableServer.address();
+      if (!unavailableAddress || typeof unavailableAddress === "string") throw new Error("Could not reserve an unavailable target port.");
+      const unavailableOrigin = `http://127.0.0.1:${unavailableAddress.port}`;
+      await new Promise<void>((done, fail) => unavailableServer.close((error) => error ? fail(error) : done()));
+      const targetFailureConfig = join(consumer, "target-failure.config.mjs");
+      await writeFile(targetFailureConfig, `export default {
+        name: "Unavailable target",
+        url: "${unavailableOrigin}",
+        steps: [{ action: "wait", for: 0 }]
+      };`);
+      const targetFailure = await runBin(["target-failure.config.mjs", "--json", "--no-report"])
+        .catch((error: unknown) => error as { code: number; stdout: string });
+      expect(targetFailure).toMatchObject({ code: 2 });
+      expect(JSON.parse(targetFailure.stdout)).toMatchObject({ ok: false });
+      expect(JSON.parse(targetFailure.stdout).error).toMatch(/ERR_CONNECTION_REFUSED|page\.goto/i);
+
+      const emptyBrowserPath = await mkdtemp(join(consumer, "missing-browsers-"));
+      const browserFailureEnvironment = { ...process.env, PLAYWRIGHT_BROWSERS_PATH: emptyBrowserPath };
+      const executableProbe = await execFileAsync(
+        process.execPath,
+        ["--input-type=module", "-e", "import { chromium } from 'playwright'; console.log(chromium.executablePath())"],
+        { cwd: consumer, env: browserFailureEnvironment }
+      );
+      expect(executableProbe.stdout.trim().startsWith(emptyBrowserPath)).toBe(true);
+      const browserFailure = await runBin(
+        ["announce-check.config.mjs", "--json", "--no-report"],
+        browserFailureEnvironment
+      ).then(
+        (result) => ({ code: 0, stdout: result.stdout }),
+        (error: unknown) => error as { code: number; stdout: string }
+      );
+      expect(browserFailure.code, browserFailure.stdout).toBe(2);
+      expect(JSON.parse(browserFailure.stdout)).toMatchObject({ ok: false });
+      expect(JSON.parse(browserFailure.stdout).error).toMatch(/executable doesn't exist|browserType\.launch|chromium/i);
     } finally {
       submitValue = "Create account";
       await rm(consumer, { recursive: true, force: true });

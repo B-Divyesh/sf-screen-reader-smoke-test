@@ -1,7 +1,7 @@
 [
   {
     "id": "demo-first-difference",
-    "claim": "The sample playground compares edited event lists and identifies the first changed event.",
+    "claim": "The demo compares edited event lists and identifies the first changed event.",
     "where": "home primary action, /demo, README",
     "test": "npm test -- --testNamePattern @claim:demo-first-difference",
     "sandbox": "fresh desktop and 390px browser contexts entering at /?demo=1; verify redirect, banner, result, edit, compare, reset, focus, and Axe"
@@ -15,14 +15,14 @@
   },
   {
     "id": "site-no-tracking",
-    "claim": "The site and demo use no accounts, cookies, analytics, telemetry, personal browser storage, or third-party runtime requests.",
+    "claim": "The site and demo use no accounts, cookies, analytics, tracking, personal storage, or requests to other sites.",
     "where": "home facts, privacy policy, README",
     "test": "npm test -- --testNamePattern @claim:site-no-tracking",
     "sandbox": "fresh 390px browser context; record every demo request and inspect cookies, localStorage, sessionStorage, and IndexedDB"
   },
   {
     "id": "offline-demo",
-    "claim": "The guide and sample playground work offline after the first visit.",
+    "claim": "The guide and demo work offline after the first visit.",
     "where": "offline status, README",
     "test": "npm test -- --testNamePattern @claim:offline-demo",
     "sandbox": "fresh browser context; install the built service worker, visit /demo, clear browser cache, go offline, reload, and compare"
@@ -36,10 +36,10 @@
   },
   {
     "id": "cli-exit-codes",
-    "claim": "The CLI exits 0 for a match or update, 1 for a difference, and 2 for invalid input.",
+    "claim": "The CLI exits 0 for a match or update, 1 for a difference, and 2 for invalid input, target, or browser failures.",
     "where": "README usage",
     "test": "npm test -- --testNamePattern @claim:cli-exit-codes",
-    "sandbox": "fresh packed-package consumer; record, match, change the accessible name, and pass an unknown option"
+    "sandbox": "fresh packed-package consumer; record, match, change the accessible name, pass an unknown option, use an unreachable target, and make Chromium unavailable"
   },
   {
     "id": "ci-recheck",

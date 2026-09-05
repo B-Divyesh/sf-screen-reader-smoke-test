@@ -2,15 +2,17 @@
 
 ## Entry point
 
-- Production: <https://screen-reader-smoke-test.sociobot.in/?demo=1> (redirects to the canonical <https://screen-reader-smoke-test.sociobot.in/demo/?demo=1>)
+- Production: <https://screen-reader-smoke-test.sociobot.in/demo/?demo=1>
+- Short entry: <https://screen-reader-smoke-test.sociobot.in/?demo=1> redirects to the production demo URL.
 - Local: run `npm run dev:site`, then open `/demo/` on the printed origin.
 
-The home page links to `?demo=1` with the visible action “Try it with sample
-data.” The query URL and direct `/demo/` URL open the same populated state.
+The home page links to `/demo/?demo=1` with the visible action “Try it with
+sample data.” The short query URL and direct `/demo/` URL open the same
+populated state.
 
 ## Sample data
 
-The playground contains an approved three-event signup event list and a
+The demo contains an approved three-event signup event list and a
 received event list with a changed status message at event 3. Both inputs
 are editable. “Compare event lists” runs the package's exported comparison
 logic and marks the first changed event.

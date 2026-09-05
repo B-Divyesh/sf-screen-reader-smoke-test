@@ -19,14 +19,14 @@ npm install --save-dev https://screen-reader-smoke-test.sociobot.in/downloads/sc
 npx playwright install chromium
 ```
 
-## Try the sample
+## Try the demo
 
 Open <https://screen-reader-smoke-test.sociobot.in/demo/>. It loads an approved
 signup event list and a changed received event list in one click. Edit either
 input to see the first changed event. Reset restores the bundled sample.
 
-The guide and playground work offline after one online visit. The demo stores
-no cookies or personal browser data and sends no third-party runtime requests.
+The guide and demo work offline after one online visit. The demo stores no
+cookies or personal data and sends requests only to this site.
 
 ## Usage
 
@@ -61,7 +61,7 @@ npx announce-check
 ```
 
 The command exits `0` on a match or update. It exits `1` on an event-list
-difference and `2` for invalid input or a browser failure. It writes
+difference and `2` for invalid input, target, or browser failures. It writes
 `announce-check-report/index.html` by default. `--json` writes one result to
 stdout. Use `--report <directory>` to move the report. Use `--no-report` to
 skip it.
@@ -108,9 +108,9 @@ npm pack --dry-run
 `dist/site/`. The versioned download is in `dist/site/downloads/`. Run the site
 locally with `npm run dev:site`.
 
-The project has no tracking, accounts, cookies, remote fixture storage, or
-third-party runtime assets. Reports and event lists stay on your machine.
+The project has no tracking, accounts, cookies, hosted test data, or files
+loaded from other sites. Reports and event lists stay on your machine.
 
 ## License
 
-MIT © 2026 Sociobot (Param Factory)
+MIT © 2026 Sociobot (Param Factory).

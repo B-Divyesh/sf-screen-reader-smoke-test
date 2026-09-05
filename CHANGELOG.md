@@ -4,8 +4,12 @@ All notable changes follow [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
-- Add the isolated `/demo/` transcript playground, its reset controls, offline
+- Add the isolated `/demo/`, its reset controls, offline
   shell, claims manifest, and browser regression coverage.
+- Keep direct-load keyboard order intact, then focus and announce the page
+  heading after internal navigation or Back/Forward.
+- Cover invalid input, unavailable targets, and missing Chromium with the
+  documented CLI exit code 2.
 - Replace the unavailable npm-registry link with a tested, versioned package
   download produced as part of the static-site build.
 - Replace metaphorical first-screen copy with the product's job, intended team,
